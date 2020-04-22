@@ -53,10 +53,13 @@ class Hex():
         self.y = y
         self.center= Point(x, y)
         
-        self.size = size
+        self.size = size 
         self.flat = flat
         self.verts = None
         
+        #Cube coordinates
+        self.xc, self.yc, self.zc = (None, None, None)
+
         if self.flat:
             self.h = sqrt(3) * size
             self.w = 2 * size
@@ -268,10 +271,21 @@ class HexGrid():
             else:
                 xoffset = (0 if row%2 else hexw/2 ) - (num_cols//2 * hexw)       
                 yoffset = -1 * (hexh * (num_rows // 2)) + (size*(num_rows//2-1))
-
+                
             for col in range(num_cols):        
                 c = Point(xoffset + col*xdist, ydist*row + yoffset)
                 hx = Hex(c.x, c.y, size, flat=flat) #instantiate Hex based on center and size
+
+                #xyz cube coords get assigned during __init__
+                if flat:
+                    hx.xc = (col*2) + (row%2)-(num_cols) #same for a col, increases by 1 when  col increases
+                    hx.zc = (num_rows//2) - (row//2) -col # decreases with row. start with a big value
+                    hx.yc = (hx.xc + hx.zc) * (-1)
+                else:  # pointy Cube coords
+                    hx.xc = (row//2 + col-(num_cols//2)-2)
+                    hx.zc = (num_rows//2) - row
+                    hx.yc = (hx.xc + hx.zc) * (-1)
+
                 hx.get_verts()
                 self.hlist.append(hx) 
                 self.centers.append(c)
