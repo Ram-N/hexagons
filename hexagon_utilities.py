@@ -68,6 +68,8 @@ class Hex():
             self.h = 2 * size
             
         self.cube = cube # cube coords of this particular hex
+        self.row = None
+        self.column=None
 
     def __str__(self):
         desc = 'Flat' if self.flat else 'Pointy'
@@ -82,6 +84,29 @@ class Hex():
             
         self.verts = verts
         return self.verts
+
+
+    def get_points_vert_rtheta(self, dist, theta):
+        """ Return 6 points that are dist-theta away from each of the 6 vertices """
+        pts = []
+        for v in range(6):
+            pts.append(
+            (self.verts[v].x + dist * sin( (-60 * (v+1) + theta) * PI/180), #x
+            self.verts[v].y + dist * cos( (-60 * (v+1) + theta) * PI/180))  #y
+            )
+
+        return pts
+
+
+    def get_points_center_rtheta(self, dist, theta_offset):
+        """ Return 6 points that are dist-theta away from the hex center """
+        pts = []
+        for v in range(6):
+            pts.append(
+            (self.x + dist * sin( (-60 * (v+1) + theta_offset) * PI/180), #x
+            self.y  + dist * cos( (-60 * (v+1) + theta_offset) * PI/180))  #y
+            )
+        return pts
 
     def render_border(self, ax=None, **kwargs):
         """ Draws all 6 borders of a given Hexagon. fc will color the face."""
@@ -206,6 +231,11 @@ class Hex():
         
         include_center: Boolean
             Indicates whether the Center of the hexagon should to a vertex of the Polygon being rendered
+
+        pt_list: List
+            A list of Integers (0..5) or (x,y) coordinates. Note that this must start and end at the same 
+            point to 'complete' the polygon to be drawn
+            
         
         """
                 
@@ -220,9 +250,11 @@ class Hex():
         if include_center:
             xy_arr.append([self.x, self.y])            
         
-        for v in pt_list:
-            if v in range(6):
-                xy_arr.append([self.verts[v].x, self.verts[v].y])            
+        for pt in pt_list:
+            if pt in range(6): #v is one of the vertices
+                xy_arr.append([self.verts[pt].x, self.verts[pt].y])            
+            else:
+                xy_arr.append(pt) #pt must be of format (x,y)
             
         polygon = Polygon(xy_arr,
                           closed=True,
@@ -275,11 +307,11 @@ class HexGrid():
             for col in range(num_cols):        
                 c = Point(xoffset + col*xdist, ydist*row + yoffset)
                 hx = Hex(c.x, c.y, size, flat=flat) #instantiate Hex based on center and size
-
+                hx.row, hx.col = row, col
                 #xyz cube coords get assigned during __init__
                 if flat:
                     hx.xc = (col*2) + (row%2)-(num_cols) #same for a col, increases by 1 when  col increases
-                    hx.zc = (num_rows//2) - (row//2) -col # decreases with row. start with a big value
+                    hx.zc = (num_rows//2)+1 - (row) -(col) + (row//2) # decreases with row. start with a big value
                     hx.yc = (hx.xc + hx.zc) * (-1)
                 else:  # pointy Cube coords
                     hx.xc = (row//2 + col-(num_cols//2)-2)
@@ -302,7 +334,7 @@ class HexGrid():
         for h in self.hlist:
             h.render(**kwargs)
             
-        plt.axis('on');    
+        plt.axis('on')
         ax.axis('scaled')
 
         
@@ -313,7 +345,7 @@ class HexGrid():
             for h in self.hlist:
                 h.v_connect(v_pairs, **kwargs)
                             
-        plt.axis('on');    
+        plt.axis('on') 
         ax.axis('scaled')
 
         
@@ -323,7 +355,7 @@ class HexGrid():
             for h in self.hlist:
                 h.render_spokes(c_to_vlist, **kwargs)
             
-        plt.axis('on');    
+        plt.axis('on')   
         ax.axis('scaled')
 
     def render_grid_polygons(self, pt_list=None, **kwargs):
@@ -344,7 +376,7 @@ class HexGrid():
                 plt.scatter(h.x, h.y, **kwargs)
 
         #plt.axis('scaled')
-        plt.axis('on');    
+        plt.axis('on')  
         ax.axis('scaled')
 
 
