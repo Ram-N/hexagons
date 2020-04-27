@@ -108,6 +108,22 @@ class Hex():
             )
         return pts
 
+    def get_points_to_points_rtheta(self, pt6, dist, theta_offset):
+        """ Return 6 points that are dist-theta away from the 6 other pts 
+        
+            Parameters: pt6 should be a list with format
+            [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]
+        """
+
+        pts = []
+        for p in range(6):
+            pts.append(
+            (pt6[p][0] + dist * sin( (-60 * (p+1) + theta_offset) * PI/180), #x
+            pt6[p][1]  + dist * cos( (-60 * (p+1) + theta_offset) * PI/180))  #y
+            )
+        return pts
+
+
     def render_border(self, ax=None, **kwargs):
         """ Draws all 6 borders of a given Hexagon. fc will color the face."""
                 
@@ -187,6 +203,7 @@ class Hex():
             edge = Line2D([x_arr],[y_arr], **kwargs)
             ax.add_line(edge)
         return ax,
+
 
     def render_regular_polygon_from_center(self, polygon_sides, polygon_size=None, angle_radians=None, ax=None, **kwargs):
         """ Draws a regular polygon that shares its center with hexagon
