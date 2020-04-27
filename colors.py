@@ -38,7 +38,87 @@ color_sets = [
     BLACK_WHITES,
 ]
 
+# Low SATURATION COLOR sets (PASTEL colors)
+BLACK_WHITES_LOW_SAT = [
+    name
+    for tup, name in [(t, x) for t, x in by_hsv if x in BLACK_WHITES]
+    if tup[1] < 0.6
+]
 
+BLUES_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BLUES] if tup[1] < 0.7
+]
+
+BROWNS_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BROWNS] if tup[1] < 0.8
+]
+
+CYAN_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in CYANS] if tup[1] < 0.6
+]
+
+GREENS_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in GREENS] if tup[1] < 0.7
+]
+
+PINKS_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PINKS] if tup[1] < 0.7
+]
+
+PURPLES_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PURPLES] if tup[1] < 0.7
+]
+
+
+RED_BROWNS_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS] if tup[1] < 0.7
+]
+
+YELLOWS_LOW_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[1] < 0.8
+]
+
+# HIGH Value COLOR sets (STRONG colors)
+BLACK_WHITES_HIGH_SAT = [
+    name
+    for tup, name in [(t, x) for t, x in by_hsv if x in BLACK_WHITES]
+    if tup[1] >= 0.6
+]
+
+BLUES_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BLUES] if tup[1] >= 0.7
+]
+
+BROWNS_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BROWNS] if tup[1] >= 0.8
+]
+
+CYAN_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in CYANS] if tup[1] >= 0.6
+]
+
+GREENS_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in GREENS] if tup[1] >= 0.7
+]
+
+PINKS_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PINKS] if tup[1] >= 0.7
+]
+
+PURPLES_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PURPLES] if tup[1] >= 0.7
+]
+
+
+RED_BROWNS_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS] if tup[1] >= 0.7
+]
+
+YELLOWS_HIGH_SAT = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[1] >= 0.8
+]
+
+#VALUES
 # Low Value COLOR sets (darker colors)
 BLACK_WHITES_LOW_V = [
     name
@@ -77,4 +157,44 @@ RED_BROWNS_LOW_V = [
 
 YELLOWS_LOW_V = [
     name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[2] < 0.8
+]
+
+# HIGH Value COLOR sets (Lighter colors)
+BLACK_WHITES_HIGH_V = [
+    name
+    for tup, name in [(t, x) for t, x in by_hsv if x in BLACK_WHITES]
+    if tup[2] >= 0.6
+]
+
+BLUES_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BLUES] if tup[2] >= 0.7
+]
+
+BROWNS_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in BROWNS] if tup[2] >= 0.8
+]
+
+CYAN_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in CYANS] if tup[2] >= 0.6
+]
+
+GREENS_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in GREENS] if tup[2] >= 0.7
+]
+
+PINKS_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PINKS] if tup[2] >= 0.7
+]
+
+PURPLES_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in PURPLES] if tup[2] >= 0.7
+]
+
+
+RED_BROWNS_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS] if tup[2] >= 0.7
+]
+
+YELLOWS_HIGH_V = [
+    name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[2] >= 0.8
 ]

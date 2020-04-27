@@ -99,7 +99,7 @@ class Hex():
 
 
     def get_points_center_rtheta(self, dist, theta_offset):
-        """ Return 6 points that are dist-theta away from the hex center """
+        """ Return 6 points that are dist-and angle theta away from the hex center """
         pts = []
         for v in range(6):
             pts.append(
@@ -267,6 +267,11 @@ class Hex():
         if include_center:
             xy_arr.append([self.x, self.y])            
         
+        if len(pt_list):
+            if pt_list[0] in range(6) and (pt_list[0] != pt_list[-1]):
+                print("Warning: pt_list cannot form a complete Polygon. Please check")
+            #this can be better still
+            
         for pt in pt_list:
             if pt in range(6): #v is one of the vertices
                 xy_arr.append([self.verts[pt].x, self.verts[pt].y])            
