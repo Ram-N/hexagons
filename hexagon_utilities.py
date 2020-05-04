@@ -85,9 +85,18 @@ class Hex():
         self.verts = verts
         return self.verts
 
+    def get_edge_midpoints(self):
+        '''Returns 6 points that are in the middle of each of the 6 Edges'''
+        
+        if self.flat:
+            return self.get_points_vert_rtheta(self.size/2, 30)
+        else:
+            return self.get_points_vert_rtheta(self.size/2, 60)
+
+
 
     def get_points_vert_rtheta(self, dist, theta):
-        """ Return 6 points that are dist-theta away from each of the 6 vertices """
+        """ Return 6 points that are dist and angle theta away from each of the 6 vertices """
         pts = []
         for v in range(6):
             pts.append(
@@ -187,6 +196,27 @@ class Hex():
         return ax,
 
     
+    def connect_pt_to_vertices(self, pt,  ax=None, **kwargs):
+        """ Draws 'spokes' from a given point to all 6 vertices
+        
+            pt is a xy tuple
+            It usually is, but doesn't have to be inside the hexagon
+
+        """
+                
+        if ax is None:
+            ax = plt.gca()
+            
+        if self.verts is None:
+            self.verts = self.get_verts()
+
+        for v in self.verts:
+            x_arr = [v.x, pt[0]]
+            y_arr = [v.y, pt[1]]            
+            edge = Line2D([x_arr],[y_arr], **kwargs)
+            ax.add_line(edge)
+        return ax,
+
     def render_spokes(self, vlist, ax=None, **kwargs):
         """ Draws spokes from center to specific vertices"""
                 
@@ -356,9 +386,6 @@ class HexGrid():
         for h in self.hlist:
             h.render(**kwargs)
             
-        plt.axis('on')
-        ax.axis('scaled')
-
         
     def render_grid_vconnect(self, v_pairs=None, **kwargs):
         """ For entire HexGrid connect vert to vert without necessarily going through the center"""

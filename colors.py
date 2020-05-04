@@ -38,6 +38,12 @@ color_sets = [
     BLACK_WHITES,
 ]
 
+
+LOW_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] < 0.5]
+
+HIGH_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] > 0.5]
+
+
 # Low SATURATION COLOR sets (PASTEL colors)
 BLACK_WHITES_LOW_SAT = [
     name
@@ -111,14 +117,16 @@ PURPLES_HIGH_SAT = [
 
 
 RED_BROWNS_HIGH_SAT = [
-    name for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS] if tup[1] >= 0.7
+    name
+    for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS]
+    if tup[1] >= 0.7
 ]
 
 YELLOWS_HIGH_SAT = [
     name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[1] >= 0.8
 ]
 
-#VALUES
+# VALUES
 # Low Value COLOR sets (darker colors)
 BLACK_WHITES_LOW_V = [
     name
@@ -192,7 +200,9 @@ PURPLES_HIGH_V = [
 
 
 RED_BROWNS_HIGH_V = [
-    name for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS] if tup[2] >= 0.7
+    name
+    for tup, name in [(t, x) for t, x in by_hsv if x in RED_BROWNS]
+    if tup[2] >= 0.7
 ]
 
 YELLOWS_HIGH_V = [
