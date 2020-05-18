@@ -19,10 +19,15 @@ def hex_corner(center, size, i, flat=True):
     else:
         angle_rad = PI / 180 * (60*i-30)
         
-    return Point(center.x + size * cos(angle_rad),
-                 center.y + size * sin(angle_rad))
+    # return Point(center.x + size * cos(angle_rad),
+    #              center.y + size * sin(angle_rad))
+    return (center.x + size * cos(angle_rad), center.y + size * sin(angle_rad))
 
-  
+def get_pt_rtheta_away(pt, dist, theta):
+    ''' Given a point (x,y) and a certain dist at an angle theta, returns the point (x,y)'''    
+    x = pt[0] + dist * sin(theta * PI/180) #x
+    y = pt[1] + dist * cos(theta * PI/180)  #y
+    return(x,y)
 
 
 class Point():
@@ -47,12 +52,12 @@ class Hex():
     w = width = distance between 2 adjacent centers to the right/left of each other
     
     """
-    def __init__(self, x, y, size=1, flat=True, h=None, w=None, cube=None):
+    def __init__(self, x, y, size=1, id=None, flat=True, h=None, w=None, cube=None):
         '''Define properties of one single Hexagon'''
         self.x = x
         self.y = y
         self.center= Point(x, y)
-        
+        self.id = id
         self.size = size 
         self.flat = flat
         self.verts = None
@@ -93,6 +98,17 @@ class Hex():
         else:
             return self.get_points_vert_rtheta(self.size/2, 60)
 
+    def get_point_on_edge(self, edge, dist=None):
+        """
+        Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge        
+        """
+        if edge not in range(6):
+            return None
+            
+        pt = self.verts[edge]
+        if not dist: #then a random distance (0, size) is generated
+            dist = np.random.random() * self.size
+        return get_pt_rtheta_away(pt, dist, -30-edge*60)
 
 
     def get_points_vert_rtheta(self, dist, theta):
@@ -165,13 +181,6 @@ class Hex():
                                          orientation=rot_radians,
                                           **kwargs)
         ax.add_patch(polygon)
-                    
-        if 0: #planning to use this if optionally only specified edges are to be drawn...
-            x_arr = [v.x for v in vs] + [vs[0].x]
-            y_arr = [v.y for v in vs] + [vs[0].y]
-            edge = Line2D([x_arr],[y_arr], **kwargs)
-            ax.add_line(edge)
-
         return ax,
 
     
@@ -297,10 +306,9 @@ class Hex():
         if include_center:
             xy_arr.append([self.x, self.y])            
         
-        if len(pt_list):
-            if pt_list[0] in range(6) and (pt_list[0] != pt_list[-1]):
-                print("Warning: pt_list cannot form a complete Polygon. Please check")
-            #this can be better still
+        # if len(pt_list):
+        #     if pt_list[0] in range(6) and (pt_list[0] != pt_list[-1]):
+        #         print("Warning: pt_list cannot form a complete Polygon. Please check")
             
         for pt in pt_list:
             if pt in range(6): #v is one of the vertices
@@ -348,6 +356,7 @@ class HexGrid():
             ydist = 3/4*hexh
             xdist = hexw
         
+        id = 0
         for row in range(num_rows):
             if flat:
                 xoffset = (3/4*hexw if row%2 else 0) - ((num_cols+1)*size)
@@ -357,8 +366,9 @@ class HexGrid():
                 yoffset = -1 * (hexh * (num_rows // 2)) + (size*(num_rows//2-1))
                 
             for col in range(num_cols):        
-                c = Point(xoffset + col*xdist, ydist*row + yoffset)
-                hx = Hex(c.x, c.y, size, flat=flat) #instantiate Hex based on center and size
+                cx, cy = xoffset + col*xdist, ydist*row + yoffset
+                c = Point(cx, cy)
+                hx = Hex(cx, cy, size, id = id, flat=flat) #instantiate Hex based on center and size
                 hx.row, hx.col = row, col
                 #xyz cube coords get assigned during __init__
                 if flat:
@@ -373,6 +383,7 @@ class HexGrid():
                 hx.get_verts()
                 self.hlist.append(hx) 
                 self.centers.append(c)
+                id+=1
                 
                 
     def __str__(self):

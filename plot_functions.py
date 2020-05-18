@@ -3,6 +3,22 @@ import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
 
+def draw_line(xy1, xy2, ax, **kwargs):
+    """ Connect pt1 (x1,y1) to pt2 (x2, y2) """    
+    x_arr = [xy1[0], xy2[0]]
+    y_arr = [xy1[1], xy2[1]]
+    edge = Line2D([x_arr],[y_arr], **kwargs)
+    ax.add_line(edge)
+
+    return ax,
+
+
+
+def plot_label(xy, text):
+    y = xy[1] - 0.15  # shift y-value for label so that it's below the artist
+    plt.text(xy[0], y, text, ha="center", family='sans-serif', size=10)
+
+
 def save_file(fig, title=None, details=None):
     SAVE_FILE = True
     if SAVE_FILE:

@@ -19,13 +19,18 @@ CYANS = mcolor_names[85:99]
 BLUES = mcolor_names[100:121]
 PURPLES = mcolor_names[122:132]
 PINKS = mcolor_names[132:145]
+GREYS = mcolor_names[1:11]
 
-red_indices = [21, 22, 23, 24, 25, 26, 27, 145]
+red_indices = [15, 21, 22, 23, 24, 25, 27, 145]
 REDS = [mcolor_names[x] for x in red_indices]
+
+indices = [21, 23, 24, 25, 26, 27, 28, 38, 46]
+ORANGES = [mcolor_names[x] for x in indices]
 
 
 color_sets = [
     REDS,
+    ORANGES,
     PINKS,
     PURPLES,
     BLUES,
@@ -36,6 +41,7 @@ color_sets = [
     BROWNS,
     RED_BROWNS,
     BLACK_WHITES,
+    GREYS
 ]
 
 
@@ -85,11 +91,6 @@ YELLOWS_LOW_SAT = [
 ]
 
 # HIGH Value COLOR sets (STRONG colors)
-BLACK_WHITES_HIGH_SAT = [
-    name
-    for tup, name in [(t, x) for t, x in by_hsv if x in BLACK_WHITES]
-    if tup[1] >= 0.6
-]
 
 BLUES_HIGH_SAT = [
     name for tup, name in [(t, x) for t, x in by_hsv if x in BLUES] if tup[1] >= 0.7
@@ -122,9 +123,7 @@ RED_BROWNS_HIGH_SAT = [
     if tup[1] >= 0.7
 ]
 
-YELLOWS_HIGH_SAT = [
-    name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[1] >= 0.8
-]
+YELLOWS_HIGH_SAT = [mcolor_names[x] for x in [53, 63]] 
 
 # VALUES
 # Low Value COLOR sets (darker colors)
