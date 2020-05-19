@@ -41,7 +41,7 @@ color_sets = [
     BROWNS,
     RED_BROWNS,
     BLACK_WHITES,
-    GREYS
+    GREYS,
 ]
 
 
@@ -123,7 +123,7 @@ RED_BROWNS_HIGH_SAT = [
     if tup[1] >= 0.7
 ]
 
-YELLOWS_HIGH_SAT = [mcolor_names[x] for x in [53, 63]] 
+YELLOWS_HIGH_SAT = [mcolor_names[x] for x in [53, 63]]
 
 # VALUES
 # Low Value COLOR sets (darker colors)
@@ -207,3 +207,32 @@ RED_BROWNS_HIGH_V = [
 YELLOWS_HIGH_V = [
     name for tup, name in [(t, x) for t, x in by_hsv if x in YELLOWS] if tup[2] >= 0.8
 ]
+
+## Color Based Functions
+
+
+def get_next_color(
+    color_list,
+    col_index,
+    p_next=0.1,
+    use_color_families=False,
+    curr_fam_index=0,
+    p_next_fam=0,
+):
+
+    if use_color_families:
+        # We have more than one color_family
+        if np.random.random() < p_next_fam:
+            curr_fam_index += 1
+            col_index = 0
+        chosen_fam = color_list[curr_fam_index % len(color_list)]
+    else:
+        chosen_fam = color_list  # all colors are in one family
+
+    if np.random.random() < p_next:
+        col_index += 1
+
+    chosen_color = chosen_fam[col_index % len(chosen_fam)]
+
+    return (chosen_color, curr_fam_index, col_index)
+
