@@ -1,4 +1,6 @@
 import matplotlib.colors as mcolors
+import numpy as np
+
 
 colors_d = mcolors.CSS4_COLORS
 # Sort colors by hue, saturation, value and name
@@ -8,24 +10,103 @@ by_hsv = sorted(
 )
 mcolor_names = [name for hsv, name in by_hsv]  # pluck the names, sorted by HSV
 
+BLACK_WHITES = [
+    "white",
+    "whitesmoke",
+    "gainsboro",
+    "lightgrey",
+    "silver",
+    "darkgray",
+    "gray",
+    "dimgray",
+    "black",
+]
 
-BLACK_WHITES = mcolor_names[:13]
-RED_BROWNS = mcolor_names[14:29]
-BROWNS = mcolor_names[29:36]
-BEIGES = mcolor_names[36:49]
-YELLOWS = mcolor_names[50:64]
-GREENS = mcolor_names[64:81]
+RED_BROWNS = [
+    "maroon",
+    "darkred",
+    "brown",
+    "firebrick",
+    "indianred",
+    "rosybrown",
+    "lightsalmon",
+    "darksalmon",
+    "lightcoral",
+    "salmon",
+    "coral",
+    "tomato",
+    "orangered",
+    "red",
+]
+
+GREENS = [
+    "darkgreen",
+    "green",
+    "darkolivegreen",
+    "olivedrab",
+    "forestgreen",
+    "seagreen",
+    "mediumseagreen",
+    "darkseagreen",
+    "palegreen",
+    "lightgreen",
+    "greenyellow",
+    "yellowgreen",
+    "chartreuse",
+    "lawngreen",
+    "lime",
+    "limegreen",
+]
+
+
 CYANS = mcolor_names[85:99]
 BLUES = mcolor_names[100:121]
 PURPLES = mcolor_names[122:132]
 PINKS = mcolor_names[132:145]
 GREYS = mcolor_names[1:11]
 
-red_indices = [15, 21, 22, 23, 24, 25, 27, 145]
-REDS = [mcolor_names[x] for x in red_indices]
+BEIGES = [
+    "oldlace",
+    "linen",
+    "papayawhip",
+    "blanchedalmond",
+    "antiquewhite",
+    "bisque",
+    "moccasin",
+    "wheat",
+    "navajowhite",
+    "burlywood",
+    "tan",
+]
 
-indices = [21, 23, 24, 25, 26, 27, 28, 38, 46]
-ORANGES = [mcolor_names[x] for x in indices]
+
+YELLOWS = [
+    "lightyellow",
+    "cornsilk",
+    "lemonchiffon",
+    "lightgoldenrodyellow",
+    "palegoldenrod",
+    "yellow",
+    "gold",
+    "khaki",
+    "goldenrod",
+]
+
+REDS = ["lightcoral", "salmon", "tomato", "orangered", "red", "crimson"]
+
+BROWNS = ["peachpuff", "sandybrown", "peru", "chocolate", "sienna", "saddlebrown"]
+
+
+ORANGES = [
+    "lightsalmon",
+    "darksalmon",
+    "orange",
+    "darkorange",
+    "salmon",
+    "coral",
+    "tomato",
+    "orangered",
+]
 
 
 color_sets = [
@@ -236,3 +317,7 @@ def get_next_color(
 
     return (chosen_color, curr_fam_index, col_index)
 
+
+def get_rnd_color_family():
+    n = np.random.randint(len(color_sets))
+    return color_sets[n]

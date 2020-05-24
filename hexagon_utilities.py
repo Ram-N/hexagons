@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+PI = math.pi
+
 
 def hex_corner(center, size, i, flat=True):
     '''Return the ith vertex of a regular hex with center of size i and flat/pointy orientation'''
@@ -169,10 +171,10 @@ class Hex():
         if ax is None:
             ax = plt.gca()
             
-        if self.verts:
-            vs = self.verts
-        else:
-            vs = self.get_verts()
+        # if self.verts:
+        #     vs = self.verts
+        # else:
+        #     vs = self.get_verts()
                     
 
         rot_radians = pi/6 if self.flat else 0
@@ -226,19 +228,22 @@ class Hex():
             ax.add_line(edge)
         return ax,
 
-    def render_spokes(self, vlist, ax=None, **kwargs):
+    def render_spokes(self, vlist=None, ax=None, **kwargs):
         """ Draws spokes from center to specific vertices"""
                 
         if ax is None:
             ax = plt.gca()
+
+        if vlist is None:
+            vlist=range(6)
             
         if self.verts is None:
             self.verts = self.get_verts()
 
-        #for each vp in v_pairs, connect vi to vj by drawing a Line2D
+        #for each v in vlist, connect v to the center by drawing a Line2D
         for v in vlist:
-            x_arr = [self.verts[v].x, self.x]
-            y_arr = [self.verts[v].y, self.y]            
+            x_arr = [self.verts[v][0], self.x]
+            y_arr = [self.verts[v][1], self.y]            
             edge = Line2D([x_arr],[y_arr], **kwargs)
             ax.add_line(edge)
         return ax,
@@ -312,7 +317,7 @@ class Hex():
             
         for pt in pt_list:
             if pt in range(6): #v is one of the vertices
-                xy_arr.append([self.verts[pt].x, self.verts[pt].y])            
+                xy_arr.append([self.verts[pt][0], self.verts[pt][1]])            
             else:
                 xy_arr.append(pt) #pt must be of format (x,y)
             
@@ -440,6 +445,8 @@ class HexGrid():
         ax.axis('scaled')
 
 
-PI = math.pi
 
+def get_hexgrid_centers(hg):
+    """ get the center x and y coords for each hexagon as a list of (x,y)"""
+    return [(h.x, h.y) for h in hg.hlist]
 

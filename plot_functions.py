@@ -1,7 +1,9 @@
 
+import logging
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+
 
 def draw_line(xy1, xy2, ax, **kwargs):
     """ Connect pt1 (x1,y1) to pt2 (x2, y2) """    
@@ -19,10 +21,16 @@ def plot_label(xy, text):
     plt.text(xy[0], y, text, ha="center", family='sans-serif', size=10)
 
 
-def save_file(fig, title=None, details=None):
-    SAVE_FILE = True
+def save_file(fig, title=None, nbk=None, num_rows=None, num_cols=None, details=None, SAVE_FILE = True):
+
     if SAVE_FILE:
         fn = ''
+        if nbk is not None:
+            fn+= str(nbk)
+        if num_rows is not None:
+            fn+= str(num_rows)
+        if num_cols is not None:
+            fn+= str(num_cols)
         if title is not None:
             fn += title
             
@@ -34,6 +42,9 @@ def save_file(fig, title=None, details=None):
         #https://stackoverflow.com/questions/4804005/matplotlib-figure-facecolor-background-color
         #if you want the background color saved... you must get_facecolor()
         plt.savefig(f'../images/temp/{fn+dtstr}.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+
+        logging.info(f'Saved to ../images/temp/{fn+dtstr}.jpg')
+
 
 #https://stackoverflow.com/questions/30008322/draw-a-curve-connecting-two-points-instead-of-a-straight-line
 def curved_line(point1, point2, resolution=100):
