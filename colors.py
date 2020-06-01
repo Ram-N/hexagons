@@ -58,12 +58,77 @@ GREENS = [
     "limegreen",
 ]
 
+CYANS = [
+    "teal",
+    "darkcyan",
+    "lightseagreen",
+    "darkturquoise",
+    "mediumturquoise",
+    "paleturquoise",
+    "turquoise",
+    "aquamarine",
+    "aqua",
+    "cyan",
+]
 
-CYANS = mcolor_names[85:99]
-BLUES = mcolor_names[100:121]
-PURPLES = mcolor_names[122:132]
-PINKS = mcolor_names[132:145]
-GREYS = mcolor_names[1:11]
+BLUES = [
+    "midnightblue",
+    "navy",
+    "darkblue",
+    "mediumblue",
+    "royalblue",
+    "steelblue",
+    "lightsteelblue",
+    "lightblue",
+    "lavender",
+    "powderblue",
+    "skyblue",
+    "lightskyblue",
+    "deepskyblue",
+    "cornflowerblue",
+    "dodgerblue",
+]
+
+
+PINKS = [
+    "purple",
+    "darkmagenta",
+    "mediumvioletred",
+    "orchid",
+    "plum",
+    "violet",
+    "hotpink",
+    "deeppink",
+    "fuchsia",
+    "magenta",
+]
+
+PURPLES = [
+    "indigo",
+    "rebeccapurple",
+    "darkslateblue",
+    "slateblue",
+    "mediumpurple",
+    "mediumslateblue",
+    "mediumorchid",
+    "blueviolet",
+    "darkorchid",
+    "darkviolet",
+]
+
+
+GREYS = [
+    "dimgray",
+    "dimgrey",
+    "gray",
+    "grey",
+    "darkgray",
+    "darkgrey",
+    "silver",
+    "lightgray",
+    "lightgrey",
+    "gainsboro",
+]
 
 BEIGES = [
     "oldlace",
@@ -318,6 +383,45 @@ def get_next_color(
     return (chosen_color, curr_fam_index, col_index)
 
 
-def get_rnd_color_family():
+def get_rnd_family():
     n = np.random.randint(len(color_sets))
     return color_sets[n]
+
+
+def get_rnd_color_from_family(cfamily):
+    n = np.random.randint(len(cfamily))
+    return cfamily[n]
+
+
+def _display_color_strip(color_family, fc_bg="w"):
+    """ A quick way to print a strip of colors given a list of colors """
+
+    size = 1
+    num_rows = (len(color_family) - 1) // 10 + 1
+    hg = HexGrid(num_rows, 10, size, flat=False)
+
+    fig, ax = plt.subplots(figsize=(12, num_rows))
+    fig.patch.set_facecolor(fc_bg)
+
+    for idx, h in enumerate(hg.hlist):
+        try:
+            fc = color_family[idx]
+            border = "black"
+            h.render(fc=fc, color=border, lw=2)
+            # lab = str(idx) +'\n' + ', '.join([str(c) for c in (h.xc,h.yc,h.zc)])
+            # plot_label((h.x,h.y), lab)
+        except:
+            pass
+
+    for row in range(num_rows, 0, -1):
+        print(f"Row {row}: ", end="")
+        for c in range(10):
+            try:
+                print(color_family[10 * (row - 1) + c], end=" ")
+            except:
+                pass
+            if not (c + 1) % 10:
+                print("\n")
+
+    plt.axis("equal")
+    plt.title(namestr(color_family)[0])

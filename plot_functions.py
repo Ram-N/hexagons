@@ -26,13 +26,13 @@ def save_file(fig, title=None, nbk=None, num_rows=None, num_cols=None, details=N
     if SAVE_FILE:
         fn = ''
         if nbk is not None:
-            fn+= str(nbk)
+            fn+= str(nbk) + '_'
         if num_rows is not None:
-            fn+= str(num_rows)
+            fn+= 'r_' + str(num_rows) + '_'
         if num_cols is not None:
-            fn+= str(num_cols)
+            fn+= 'c_' +str(num_cols) + '_'
         if title is not None:
-            fn += title
+            fn += title + '_'
             
         if details is not None:
             fn+= details

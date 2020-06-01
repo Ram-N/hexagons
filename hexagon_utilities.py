@@ -5,12 +5,39 @@ from math import pi, sin, cos, sqrt
 
 from matplotlib.lines import Line2D
 import matplotlib.patches as mpatches
-from matplotlib.patches import Arc, Ellipse, Polygon, Wedge
+from matplotlib.patches import Arc, Circle, Ellipse, Polygon, Wedge
 import matplotlib.pyplot as plt
 
 import numpy as np
 
 PI = math.pi
+
+#DEFINE POLYGONS INSIDE A HEXAGON
+#Rhombuses are made up of 3 Adjacent vertices and the Center
+PENTA0, PENTA1, PENTA2 = (0,1,2,3,4), (1,2,3,4,5), (2,3,4,5,0)
+PENTA3, PENTA4, PENTA5 = (3,4,5, 0,1), (4,5, 0,1,2), (5,0,1,2,3) 
+HHEX0, HHEX1, HHEX2 = (0,1,2,3), (1,2,3,4), (2,3,4,5)
+HHEX3, HHEX4, HHEX5 = (3,4,5, 0), (4,5, 0,1), (5, 0,1,2) 
+
+RHOMBUS0, RHOMBUS1, RHOMBUS2 = (0,1,2), (1,2, 3), (2, 3, 4)
+RHOMBUS3, RHOMBUS4, RHOMBUS5 = (3,4,5), (4,5, 0), (5, 0, 1)
+VTRIANGLE0, VTRIANGLE1, VTRIANGLE2 = (0,1,2), (1,2, 3), (2, 3, 4)
+VTRIANGLE3, VTRIANGLE4, VTRIANGLE5 = (3,4,5), (4,5, 0), (5, 0, 1)
+TRIANGLES = ((0,1), (1,2), (2,3), (3,4), (4,5), (5,0) )
+CTRIANGLE0, CTRIANGLE1, CTRIANGLE2 = (0,1), (1,2), (2, 3)
+CTRIANGLE3, CTRIANGLE4, CTRIANGLE5 = (3,4), (4,5), (5, 0)
+
+ALLOWABLE_POLYGONS = [RHOMBUS0, 
+RHOMBUS1, RHOMBUS2, RHOMBUS3, RHOMBUS4, RHOMBUS5, CTRIANGLE0, CTRIANGLE1, 
+CTRIANGLE2, CTRIANGLE3, CTRIANGLE4, CTRIANGLE5, 
+HHEX0,  HHEX1,  HHEX2,  HHEX3,  HHEX4,  HHEX5, 
+PENTA0, PENTA1, PENTA2, PENTA3, PENTA4, PENTA5,  
+]
+
+RHOMBUSES1 = {'west': (0,1,2), 'northeast': (2,3,4), 'southwest': (4,5,0)}
+RHOMBUSES2 = {'northwest': (1,2,3), 'east': (3,4,5),  'south':(5, 0,1)}
+SPOKES_3A = (1,3,5)
+SPOKES_3B = (0,2,4)
 
 
 def hex_corner(center, size, i, flat=True):
@@ -23,7 +50,7 @@ def hex_corner(center, size, i, flat=True):
         
     # return Point(center.x + size * cos(angle_rad),
     #              center.y + size * sin(angle_rad))
-    return (center.x + size * cos(angle_rad), center.y + size * sin(angle_rad))
+    return (center[0] + size * cos(angle_rad), center[1] + size * sin(angle_rad))
 
 def get_pt_rtheta_away(pt, dist, theta):
     ''' Given a point (x,y) and a certain dist at an angle theta, returns the point (x,y)'''    
@@ -58,7 +85,7 @@ class Hex():
         '''Define properties of one single Hexagon'''
         self.x = x
         self.y = y
-        self.center= Point(x, y)
+        self.center= (x, y)
         self.id = id
         self.size = size 
         self.flat = flat
@@ -92,37 +119,61 @@ class Hex():
         self.verts = verts
         return self.verts
 
+
+    def get_points_on_edge(self, edge=None, dist=None):
+        """
+        Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge        
+        """
+
+        if self.flat:
+            theta_offset = 30
+        else:
+            theta_offset = -60
+
+        if not dist: #then a random distance (0, size) is generated
+            dist = np.random.random() * self.size
+
+        new_pts = []
+        if edge not in range(6):
+            pts = self.verts
+            for v, pt in enumerate(pts): #1 or all 6
+                new_pts.append(
+                (pt[0] + dist * sin( (-60 * (v+1) + theta_offset) * PI/180), #x
+                pt[1] + dist * cos( (-60 * (v+1) + theta_offset) * PI/180))  #y
+                )
+        else: # one specific edge
+            pt = self.verts[edge]
+            new_pts.append(
+            (pt[0] + dist * sin( (-60 * (edge+1) + theta_offset) * PI/180),
+            pt[1] + dist * cos( (-60 * (edge+1) + theta_offset) * PI/180))  #y            
+            )
+ 
+        return new_pts
+
+
+    def get_points_dist_from_vertex(self, dist, theta):
+        """ Return 6 points that are dist and angle theta away from each of the 6 vertices 
+        
+        Note that these points may or may not be on an edge.
+        To be on the edge, theta gets fixed
+
+        """
+        pts = []
+        for v in range(6):
+            pts.append(
+            (self.verts[v][0] + dist * sin( (-60 * (v+1) + theta) * PI/180), #x
+            self.verts[v][1] + dist * cos( (-60 * (v+1) + theta) * PI/180))  #y
+            )
+
+        return pts
+
     def get_edge_midpoints(self):
         '''Returns 6 points that are in the middle of each of the 6 Edges'''
         
         if self.flat:
-            return self.get_points_vert_rtheta(self.size/2, 30)
+            return self.get_points_dist_from_vertex(self.size/2, 30)
         else:
-            return self.get_points_vert_rtheta(self.size/2, 60)
-
-    def get_point_on_edge(self, edge, dist=None):
-        """
-        Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge        
-        """
-        if edge not in range(6):
-            return None
-            
-        pt = self.verts[edge]
-        if not dist: #then a random distance (0, size) is generated
-            dist = np.random.random() * self.size
-        return get_pt_rtheta_away(pt, dist, -30-edge*60)
-
-
-    def get_points_vert_rtheta(self, dist, theta):
-        """ Return 6 points that are dist and angle theta away from each of the 6 vertices """
-        pts = []
-        for v in range(6):
-            pts.append(
-            (self.verts[v].x + dist * sin( (-60 * (v+1) + theta) * PI/180), #x
-            self.verts[v].y + dist * cos( (-60 * (v+1) + theta) * PI/180))  #y
-            )
-
-        return pts
+            return self.get_points_dist_from_vertex(self.size/2, 60)
 
 
     def get_points_center_rtheta(self, dist, theta_offset):
@@ -137,9 +188,24 @@ class Hex():
 
     def get_points_to_points_rtheta(self, pt6, dist, theta_offset):
         """ Return 6 points that are dist-theta away from the 6 other pts 
+
+        Parameters
+        ----------
+        pt6 : list-like
+            pt6 should be a list with format   [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]
+
+        dist : float
+            distance from the pt6 points.
+
+        theta-offset : float or int
+            Angle (in degrees). Note that the angle is w.r.t to two points. It is not absolute.
+
+        Returns
+        -------
+        list
+        List of 6 new points, in [(x1,y1), (x2,y2) ...] format
         
-            Parameters: pt6 should be a list with format
-            [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]
+            
         """
 
         pts = []
@@ -149,6 +215,7 @@ class Hex():
             pt6[p][1]  + dist * cos( (-60 * (p+1) + theta_offset) * PI/180))  #y
             )
         return pts
+        
 
 
     def render_border(self, ax=None, **kwargs):
@@ -329,9 +396,84 @@ class Hex():
         return ax,
 
 
+    def render_circle(self, incircle=True, ax=None, **kwargs):
+        """ Draw the incircle with raduis equal to the apothem of the hexagon
+        
+        Parameters:
+        
+        incircle: Boolean, optional
+            If True, indicates that the incircle should be rendered
+            If False, indicates that the circumcircle should be rendered
+            Default is True.
+
+        """
+
+        if ax is None:
+            ax = plt.gca()
+
+        if incircle:
+            radius = self.h/2 if self.flat else self.w/2
+        else:
+            radius = self.size 
+            
+        hcircle = Circle((self.x, self.y), radius, **kwargs)
+        ax.add_patch(hcircle)
+
+    def render_arc(self, incircle=True, ax=None, **kwargs):
+        """ Draw the incircle with raduis equal to the apothem of the hexagon
+        
+        Parameters:
+        
+        incircle: Boolean, optional
+            If True, indicates that the incircle should be rendered
+            If False, indicates that the circumcircle should be rendered
+            Default is True.
+
+        """
+
+        if ax is None:
+            ax = plt.gca()
+
+        if incircle:
+            radius = self.h if self.flat else self.w
+        else:
+            radius = self.size * 2
+            
+        h_arc = Arc((self.x, self.y), width=radius, height=radius, **kwargs)
+        ax.add_patch(h_arc)
+
+    def decorate(self, poly=None, line=None, include_center=True, ax=None, **kwargs):
+        """ Draw a Polygon to connect specific vertices and optionally center"""
+
+        if poly is not None:
+            if poly not  in ALLOWABLE_POLYGONS:                
+                print(f'poly {poly} is not defined.')
+            else:
+                self.render_polygon(pt_list=poly, include_center=include_center, **kwargs)
+
+    def point(self, pt_name, action=None, index=None, dist=None, theta=None, ax=None, **kwargs):
+        """ Draw a Polygon to connect specific vertices and optionally center"""
+
+        if pt_name == 'center':
+            return((self.x, self.y))
+        if self.verts is None:
+            self.verts = self.get_verts()
+
+        if pt_name in ['verts', 'vertices', 'vertex']:
+
+            if index is not None:
+                return(self.verts[index])
+            else:
+                return(self.verts)
+
+        if pt_name in ['edge', 'edges', 'e']:
+            if action =='trisect':
+                set1 = self.get_points_on_edge(edge=index, dist=self.size/3)
+                set2 = self.get_points_on_edge(edge=index, dist=self.size* 2/3)
+                return(list(set1 + set2))
 
 
-    
+
 class HexGrid():
 
     """Represents the a hexagonal grid as painted on the screen.
@@ -341,7 +483,7 @@ class HexGrid():
     And there is a rectangle (a bounding box) for the grid, since it has to be rendered in the xy plane
     
     """
-    def __init__(self, num_rows, num_cols, size=1, flat=True, rect_h=None, rect_w=None):
+    def __init__(self, num_rows, num_cols, size=1, flat=True, xstart=0, ystart=0, rect_h=None, rect_w=None):
         
         self.num_rows = num_rows
         self.num_cols = num_cols
@@ -364,17 +506,18 @@ class HexGrid():
         id = 0
         for row in range(num_rows):
             if flat:
-                xoffset = (3/4*hexw if row%2 else 0) - ((num_cols+1)*size)
-                yoffset = -1 * hexh * (num_rows // 4)
+                x_from_left =  (3/4*hexw if row%2 else 0) - ((num_cols+1)*size)
+                y_from_bottom = -1 * hexh * (num_rows // 4)
             else:
-                xoffset = (0 if row%2 else hexw/2 ) - (num_cols//2 * hexw)       
-                yoffset = -1 * (hexh * (num_rows // 2)) + (size*(num_rows//2-1))
+                x_from_left =  (0 if row%2 else hexw/2 ) - (num_cols//2 * hexw)       
+                y_from_bottom = -1 * (hexh * (num_rows // 2)) + (size*(num_rows//2-1))
                 
             for col in range(num_cols):        
-                cx, cy = xoffset + col*xdist, ydist*row + yoffset
-                c = Point(cx, cy)
+                cx, cy = xstart + x_from_left + col*xdist, ystart + ydist*row + y_from_bottom
+                #c = Point(cx, cy)
                 hx = Hex(cx, cy, size, id = id, flat=flat) #instantiate Hex based on center and size
                 hx.row, hx.col = row, col
+
                 #xyz cube coords get assigned during __init__
                 if flat:
                     hx.xc = (col*2) + (row%2)-(num_cols) #same for a col, increases by 1 when  col increases
@@ -387,7 +530,7 @@ class HexGrid():
 
                 hx.get_verts()
                 self.hlist.append(hx) 
-                self.centers.append(c)
+                self.centers.append((cx,cy))
                 id+=1
                 
                 
