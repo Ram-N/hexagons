@@ -1,5 +1,6 @@
 import matplotlib.colors as mcolors
 import numpy as np
+from typing import List, Dict, Tuple
 
 
 colors_d = mcolors.CSS4_COLORS
@@ -191,6 +192,32 @@ color_sets = [
 ]
 
 
+color_family_dict = {
+    "Beiges": BEIGES,
+    "black_whites": BLACK_WHITES,
+    "Blues": BLUES,
+    "browns": BROWNS,
+    "Cyans": CYANS,
+    "Greens": GREENS,
+    "Greys": GREYS,
+    "Oranges": ORANGES,
+    "Pinks": PINKS,
+    "Purples": PURPLES,
+    "red_browns": RED_BROWNS,
+    "Reds": REDS,
+    "Yellows": YELLOWS,
+}
+
+
+def get_key_given_item(v, _dict: Dict):
+    """
+    Get list of keys from a dictionary, given its value. Reverse lookup
+    """
+
+    keys = [key for (key, value) in _dict.items() if value == v]
+    return keys
+
+
 LOW_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] < 0.5]
 
 HIGH_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] > 0.5]
@@ -357,6 +384,56 @@ YELLOWS_HIGH_V = [
 ## Color Based Functions
 
 
+def print_color_family_names(cfams):
+    """ Print the Color Family Name instead of printing out each element 
+
+        This function is useful in logging the colors used, especially if random color families are fetched.
+
+        Parameters
+        ----------
+
+        cfams: List
+            One or more Color Families, pre-specified. Each element is a list of colornames
+            
+    """
+    return_str = ""
+    for f in cfams:
+        if f in color_family_dict.values():
+            keys = get_key_given_item(f, color_family_dict)
+            return_str += [str(k) for k in keys]
+        else:
+            return_str += str(f)
+
+    return return_str
+
+
+def get_random_color(n: int, low: int = 0, high: int = 148) -> List:
+    """ Get a completely random color
+
+        If you specify a `low` and `high` you can pick the colors from a specific range of CSS4 Colors 
+
+        Parameters
+        ----------
+        n : int
+            number of colors desired
+
+        low : int
+            lower end to pick range of mcolornames (Default is 0)
+
+        high : int
+            upper end to pick range of mcolornames (Default is 148)
+
+        Returns
+        -------
+        List
+            List of n colors . Each element is a color name 
+        
+    """
+
+    # TODO: Need to handle replacement=True/False later
+    return [mcolor_names[np.random.randint(low=low, high=high)] for _ in range(n)]
+
+
 def get_next_color(
     color_list,
     col_index,
@@ -391,6 +468,35 @@ def get_rnd_family():
 def get_rnd_color_from_family(cfamily):
     n = np.random.randint(len(cfamily))
     return cfamily[n]
+
+
+def get_n_random_color_families(n: int = 2) -> List:
+    """ Returns a specified number n of randomly selected color families
+
+        Parameters
+        ----------
+
+        n : int
+            number of color families desired
+        
+        Returns
+        -------
+        List
+            List of n color families. each Element (COLOR FAMILY) is a list of color names 
+        
+
+    """
+
+    fam_list = []
+    for _ in range(n):
+        done = 0
+        while not done:
+            fam1 = get_rnd_family()
+            if len(fam1) >= 6:
+                done = 1
+        fam_list.append(fam1)
+
+    return fam_list
 
 
 def _display_color_strip(color_family, fc_bg="w"):

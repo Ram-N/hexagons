@@ -7,8 +7,9 @@ from matplotlib.lines import Line2D
 import matplotlib.patches as mpatches
 from matplotlib.patches import Arc, Circle, Ellipse, Polygon, Wedge
 import matplotlib.pyplot as plt
-
 import numpy as np
+from typing import List
+
 
 PI = math.pi
 
@@ -26,7 +27,7 @@ VTRIANGLE3, VTRIANGLE4, VTRIANGLE5 = (3,4,5), (4,5, 0), (5, 0, 1)
 TRIANGLES = ((0,1), (1,2), (2,3), (3,4), (4,5), (5,0) )
 CTRIANGLE0, CTRIANGLE1, CTRIANGLE2 = (0,1), (1,2), (2, 3)
 CTRIANGLE3, CTRIANGLE4, CTRIANGLE5 = (3,4), (4,5), (5, 0)
-
+CTRIANGLES = [CTRIANGLE0, CTRIANGLE1, CTRIANGLE2, CTRIANGLE3, CTRIANGLE4, CTRIANGLE5, ]
 ALLOWABLE_POLYGONS = [RHOMBUS0, 
 RHOMBUS1, RHOMBUS2, RHOMBUS3, RHOMBUS4, RHOMBUS5, CTRIANGLE0, CTRIANGLE1, 
 CTRIANGLE2, CTRIANGLE3, CTRIANGLE4, CTRIANGLE5, 
@@ -176,15 +177,46 @@ class Hex():
             return self.get_points_dist_from_vertex(self.size/2, 60)
 
 
-    def get_points_center_rtheta(self, dist, theta_offset):
-        """ Return 6 points that are dist-and angle theta away from the hex center """
+    def get_points_center_rtheta(self, dist, theta_offset, index=None):
+        """ Return 6 points that are dist-and angle theta away from the hex center 
+
+        Parameters
+        ----------
+
+        dist : float
+            distance from the hexagon center
+
+        theta-offset : float or int
+            Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.
+
+        index: None or integer
+            index specifies which spoke or apothem to use for theta offset.
+            If index is None, then all 6 are returned
+
+        Returns
+        -------
+        list
+        List of 6 new points, in [(x1,y1), (x2,y2) ...] format
+
+        
+        """
         pts = []
-        for v in range(6):
-            pts.append(
-            (self.x + dist * sin( (-60 * (v+1) + theta_offset) * PI/180), #x
-            self.y  + dist * cos( (-60 * (v+1) + theta_offset) * PI/180))  #y
-            )
+        if index is None:
+            for v in range(6):
+                pts.append(
+                (self.x + dist * sin( (-60 * (v+1) + theta_offset) * PI/180), #x
+                self.y  + dist * cos( (-60 * (v+1) + theta_offset) * PI/180))  #y
+                )
+        elif index in range(6):
+                pts.append(
+                (self.x + dist * sin( (-60 * (index+1) + theta_offset) * PI/180), #x
+                self.y  + dist * cos( (-60 * (index+1) + theta_offset) * PI/180))  #y
+                )
+        else:
+            print(f'Invalid Index {index} specified to function. It must be None or one of 0..5')
+
         return pts
+
 
     def get_points_to_points_rtheta(self, pt6, dist, theta_offset):
         """ Return 6 points that are dist-theta away from the 6 other pts 
@@ -295,8 +327,9 @@ class Hex():
             ax.add_line(edge)
         return ax,
 
+
     def render_spokes(self, vlist=None, ax=None, **kwargs):
-        """ Draws spokes from center to specific vertices"""
+        """ Draws spokes from center to specific vertices """
                 
         if ax is None:
             ax = plt.gca()
@@ -313,6 +346,28 @@ class Hex():
             y_arr = [self.verts[v][1], self.y]            
             edge = Line2D([x_arr],[y_arr], **kwargs)
             ax.add_line(edge)
+        return ax,
+
+    def render_apothems(self, index=None, ax=None, **kwargs):
+        """ Draws spokes from center to specific vertices"""
+                
+        if ax is None:
+            ax = plt.gca()
+
+            
+        inradius = self.h/2 if self.flat else self.w/2
+        pts = self.get_points_center_rtheta(inradius, 120)
+        if index in range(6):
+            xp, yp = pts[index]
+            x_arr = [xp, self.x]
+            y_arr = [yp, self.y]            
+        else: # draw all six
+            #for each pt connect v to the center by drawing a Line2D
+            for pt in pts:
+                x_arr = [pt[0], self.x]
+                y_arr = [pt[1], self.y]            
+        edge = Line2D([x_arr],[y_arr], **kwargs)
+        ax.add_line(edge)
         return ax,
 
 
@@ -351,7 +406,7 @@ class Hex():
         return ax,
 
     
-    def render_polygon(self, pt_list, include_center, ax=None, **kwargs):
+    def render_polygon(self, pt_list, include_center=False, ax=None, **kwargs):
         """ Draw a Polygon to connect specific vertices and optionally center
         
         
@@ -359,6 +414,7 @@ class Hex():
         
         include_center: Boolean
             Indicates whether the Center of the hexagon should to a vertex of the Polygon being rendered
+            Default: False
 
         pt_list: List
             A list of Integers (0..5) or (x,y) coordinates. Note that this must start and end at the same 
@@ -454,6 +510,7 @@ class Hex():
     def point(self, pt_name, action=None, index=None, dist=None, theta=None, ax=None, **kwargs):
         """ Draw a Polygon to connect specific vertices and optionally center"""
 
+
         if pt_name == 'center':
             return((self.x, self.y))
         if self.verts is None:
@@ -471,6 +528,45 @@ class Hex():
                 set1 = self.get_points_on_edge(edge=index, dist=self.size/3)
                 set2 = self.get_points_on_edge(edge=index, dist=self.size* 2/3)
                 return(list(set1 + set2))
+
+
+
+        if pt_name in ['spoke', 'spokes', 'apothem']:
+            inradius = self.h/2 if self.flat else self.w/2
+
+            if pt_name in ['spoke', 'spokes']:
+                theta_offset = 30
+            else: #apothem
+                theta_offset = 120
+
+
+            if action =='bisect':
+                if pt_name in ['spoke', 'spokes']:
+                    dist = self.size /2
+                else: #apothem
+                    dist = inradius /2
+                return(self.get_points_center_rtheta(dist, theta_offset))
+
+            if action =='trisect':
+                if pt_name in ['spoke', 'spokes']:
+                    triseg = self.size /3
+                else: #apothem
+                    triseg = inradius/3
+
+                set1 = self.get_points_center_rtheta(dist=triseg, theta_offset=theta_offset)
+                set2 = self.get_points_center_rtheta(dist=triseg*2, theta_offset=theta_offset)
+                return(list(set1 + set2))
+
+            if dist =='random' or (dist is None):
+                if pt_name in ['spoke', 'spokes']:
+                    dist = self.size * np.random.random()
+                else: #apothem
+                    inradius = self.h/2 if self.flat else self.w/2
+                    dist = inradius  * np.random.random()
+
+            return(self.get_points_center_rtheta(dist, theta_offset, index))
+                
+
 
 
 

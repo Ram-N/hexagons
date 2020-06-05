@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hexagon_utilities module &mdash; Hexagons 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="plot_functions module" href="plot_functions.html" />
+    <link rel="prev" title="hex_trees module" href="hex_trees.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Hexagons
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">hexagons</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hex_trees.html">hex_trees module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">hexagon_utilities module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_functions.html">plot_functions module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Hexagons</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">hexagons</a> &raquo;</li>
+        
+      <li>hexagon_utilities module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hexagon_utilities.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-hexagon_utilities">
+<span id="hexagon-utilities-module"></span><h1>hexagon_utilities module<a class="headerlink" href="#module-hexagon_utilities" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="hexagon_utilities.Hex">
+<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">Hex</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">size=1</em>, <em class="sig-param">id=None</em>, <em class="sig-param">flat=True</em>, <em class="sig-param">h=None</em>, <em class="sig-param">w=None</em>, <em class="sig-param">cube=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents one Hexagon. Typically on a hexagonal grid</p>
+<p>The hexagon can be flat topped (flat = True) or pointy-topped (flat=False)
+Each Hexagon has:
+a center (x,y)
+size (of its edge)
+flat = True (or False if Pointy-topped)
+verts = xy of its 6 vertices
+h = height of the hexaxon from top to bottom
+w = width = distance between 2 adjacent centers to the right/left of each other</p>
+<dl class="method">
+<dt id="hexagon_utilities.Hex.connect_pt_to_vertices">
+<code class="sig-name descname">connect_pt_to_vertices</code><span class="sig-paren">(</span><em class="sig-param">pt</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.connect_pt_to_vertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws ‘spokes’ from a given point to all 6 vertices</p>
+<p>pt is a xy tuple
+It usually is, but doesn’t have to be inside the hexagon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.decorate">
+<code class="sig-name descname">decorate</code><span class="sig-paren">(</span><em class="sig-param">poly=None</em>, <em class="sig-param">line=None</em>, <em class="sig-param">include_center=True</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.decorate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Polygon to connect specific vertices and optionally center</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_edge_midpoints">
+<code class="sig-name descname">get_edge_midpoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_edge_midpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns 6 points that are in the middle of each of the 6 Edges</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_points_center_rtheta">
+<code class="sig-name descname">get_points_center_rtheta</code><span class="sig-paren">(</span><em class="sig-param">dist</em>, <em class="sig-param">theta_offset</em>, <em class="sig-param">index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_center_rtheta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return 6 points that are dist-and angle theta away from the hex center</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center</p></li>
+<li><p><strong>theta-offset</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.</p></li>
+<li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
+If index is None, then all 6 are returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>list</em></p></li>
+<li><p><em>List of 6 new points, in [(x1,y1), (x2,y2) …] format</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_points_dist_from_vertex">
+<code class="sig-name descname">get_points_dist_from_vertex</code><span class="sig-paren">(</span><em class="sig-param">dist</em>, <em class="sig-param">theta</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_dist_from_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return 6 points that are dist and angle theta away from each of the 6 vertices</p>
+<p>Note that these points may or may not be on an edge.
+To be on the edge, theta gets fixed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_points_on_edge">
+<code class="sig-name descname">get_points_on_edge</code><span class="sig-paren">(</span><em class="sig-param">edge=None</em>, <em class="sig-param">dist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_on_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_points_to_points_rtheta">
+<code class="sig-name descname">get_points_to_points_rtheta</code><span class="sig-paren">(</span><em class="sig-param">pt6</em>, <em class="sig-param">dist</em>, <em class="sig-param">theta_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_to_points_rtheta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return 6 points that are dist-theta away from the 6 other pts</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pt6</strong> (<em>list-like</em>) – pt6 should be a list with format   [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]</p></li>
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the pt6 points.</p></li>
+<li><p><strong>theta-offset</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to two points. It is not absolute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>list</em></p></li>
+<li><p><em>List of 6 new points, in [(x1,y1), (x2,y2) …] format</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_verts">
+<code class="sig-name descname">get_verts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_verts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all 6 verticles of the hex</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.point">
+<code class="sig-name descname">point</code><span class="sig-paren">(</span><em class="sig-param">pt_name</em>, <em class="sig-param">action=None</em>, <em class="sig-param">index=None</em>, <em class="sig-param">dist=None</em>, <em class="sig-param">theta=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Polygon to connect specific vertices and optionally center</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render">
+<code class="sig-name descname">render</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the edges of a given Hexagon. fc will color the face.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_apothems">
+<code class="sig-name descname">render_apothems</code><span class="sig-paren">(</span><em class="sig-param">index=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_apothems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws spokes from center to specific vertices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_arc">
+<code class="sig-name descname">render_arc</code><span class="sig-paren">(</span><em class="sig-param">incircle=True</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the incircle with raduis equal to the apothem of the hexagon</p>
+<p>Parameters:</p>
+<dl class="simple">
+<dt>incircle: Boolean, optional</dt><dd><p>If True, indicates that the incircle should be rendered
+If False, indicates that the circumcircle should be rendered
+Default is True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_border">
+<code class="sig-name descname">render_border</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_border" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws all 6 borders of a given Hexagon. fc will color the face.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_circle">
+<code class="sig-name descname">render_circle</code><span class="sig-paren">(</span><em class="sig-param">incircle=True</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the incircle with raduis equal to the apothem of the hexagon</p>
+<p>Parameters:</p>
+<dl class="simple">
+<dt>incircle: Boolean, optional</dt><dd><p>If True, indicates that the incircle should be rendered
+If False, indicates that the circumcircle should be rendered
+Default is True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_polygon">
+<code class="sig-name descname">render_polygon</code><span class="sig-paren">(</span><em class="sig-param">pt_list</em>, <em class="sig-param">include_center=False</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Polygon to connect specific vertices and optionally center</p>
+<p>Parameters:</p>
+<dl class="simple">
+<dt>include_center: Boolean</dt><dd><p>Indicates whether the Center of the hexagon should to a vertex of the Polygon being rendered
+Default: False</p>
+</dd>
+<dt>pt_list: List</dt><dd><p>A list of Integers (0..5) or (x,y) coordinates. Note that this must start and end at the same
+point to ‘complete’ the polygon to be drawn</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_regular_polygon_from_center">
+<code class="sig-name descname">render_regular_polygon_from_center</code><span class="sig-paren">(</span><em class="sig-param">polygon_sides</em>, <em class="sig-param">polygon_size=None</em>, <em class="sig-param">angle_radians=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_regular_polygon_from_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a regular polygon that shares its center with hexagon</p>
+<p>Useful for drawing polygon _within_ the existing hexagonal space. For example, smaller hexagons inside the main grid.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><p>polygon_sides = number of sides in the regular polygon</p>
+<p>polygon_size = Size of the polygon’s side to be drawn. (defaults to hexagon’s size)
+angle_radians = will rotate the regular polygon by radians angle
+fc:  will color the face</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_spokes">
+<code class="sig-name descname">render_spokes</code><span class="sig-paren">(</span><em class="sig-param">vlist=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_spokes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws spokes from center to specific vertices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.v_connect">
+<code class="sig-name descname">v_connect</code><span class="sig-paren">(</span><em class="sig-param">v_pairs</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.v_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws edges from specific vertices to specified vertices…</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hexagon_utilities.HexGrid">
+<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">HexGrid</code><span class="sig-paren">(</span><em class="sig-param">num_rows</em>, <em class="sig-param">num_cols</em>, <em class="sig-param">size=1</em>, <em class="sig-param">flat=True</em>, <em class="sig-param">xstart=0</em>, <em class="sig-param">ystart=0</em>, <em class="sig-param">rect_h=None</em>, <em class="sig-param">rect_w=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the a hexagonal grid as painted on the screen.
+The hex grid can be flat topped (flat = True) or pointy-topped (flat=False)</p>
+<p>It has a list of hexs in hlist
+And there is a rectangle (a bounding box) for the grid, since it has to be rendered in the xy plane</p>
+<dl class="method">
+<dt id="hexagon_utilities.HexGrid.render_grid">
+<code class="sig-name descname">render_grid</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.HexGrid.render_grid_polygons">
+<code class="sig-name descname">render_grid_polygons</code><span class="sig-paren">(</span><em class="sig-param">pt_list=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid_polygons" title="Permalink to this definition">¶</a></dt>
+<dd><p>For entire HexGrid connect center to vlist</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.HexGrid.render_grid_spokes">
+<code class="sig-name descname">render_grid_spokes</code><span class="sig-paren">(</span><em class="sig-param">c_to_vlist=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid_spokes" title="Permalink to this definition">¶</a></dt>
+<dd><p>For entire HexGrid connect center to specified vertices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.HexGrid.render_grid_vconnect">
+<code class="sig-name descname">render_grid_vconnect</code><span class="sig-paren">(</span><em class="sig-param">v_pairs=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid_vconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>For entire HexGrid connect vert to vert without necessarily going through the center</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.HexGrid.render_grid_vertices">
+<code class="sig-name descname">render_grid_vertices</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid_vertices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hexagon_utilities.Point">
+<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hexagon_utilities.get_hexgrid_centers">
+<code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">get_hexgrid_centers</code><span class="sig-paren">(</span><em class="sig-param">hg</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.get_hexgrid_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the center x and y coords for each hexagon as a list of (x,y)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hexagon_utilities.get_pt_rtheta_away">
+<code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">get_pt_rtheta_away</code><span class="sig-paren">(</span><em class="sig-param">pt</em>, <em class="sig-param">dist</em>, <em class="sig-param">theta</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.get_pt_rtheta_away" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a point (x,y) and a certain dist at an angle theta, returns the point (x,y)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hexagon_utilities.hex_corner">
+<code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">hex_corner</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">size</em>, <em class="sig-param">i</em>, <em class="sig-param">flat=True</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.hex_corner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the ith vertex of a regular hex with center of size i and flat/pointy orientation</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_functions.html" class="btn btn-neutral float-right" title="plot_functions module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hex_trees.html" class="btn btn-neutral float-left" title="hex_trees module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ram Narasimhan
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
