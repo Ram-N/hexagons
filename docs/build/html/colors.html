@@ -187,13 +187,13 @@
 
 <dl class="function">
 <dt id="colors.get_random_color">
-<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_random_color</code><span class="sig-paren">(</span><em class="sig-param">n: int</em>, <em class="sig-param">low: int = 0</em>, <em class="sig-param">high: int = 148</em><span class="sig-paren">)</span> &#x2192; List<a class="headerlink" href="#colors.get_random_color" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_random_color</code><span class="sig-paren">(</span><em class="sig-param">n: int = 1</em>, <em class="sig-param">low: int = 0</em>, <em class="sig-param">high: int = 148</em><span class="sig-paren">)</span> &#x2192; List<a class="headerlink" href="#colors.get_random_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a completely random color</p>
 <p>If you specify a <cite>low</cite> and <cite>high</cite> you can pick the colors from a specific range of CSS4 Colors</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – number of colors desired</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – number of colors desired. Default is 1. If n is 1, just the color_name is return, not a list</p></li>
 <li><p><strong>low</strong> (<em>int</em>) – lower end to pick range of mcolornames (Default is 0)</p></li>
 <li><p><strong>high</strong> (<em>int</em>) – upper end to pick range of mcolornames (Default is 148)</p></li>
 </ul>
@@ -221,7 +221,7 @@
 <dt id="colors.print_color_family_names">
 <code class="sig-prename descclassname">colors.</code><code class="sig-name descname">print_color_family_names</code><span class="sig-paren">(</span><em class="sig-param">cfams</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.print_color_family_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the Color Family Name instead of printing out each element</p>
-<p>This function is useful in logging the colors used, especially if random color families are fetched.</p>
+<p>This function is useful when logging the colors used, especially if color families are fetched randomly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>cfams</strong> (<em>List</em>) – One or more Color Families, pre-specified. Each element is a list of colornames</p>
