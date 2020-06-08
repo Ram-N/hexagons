@@ -387,7 +387,7 @@ YELLOWS_HIGH_V = [
 def print_color_family_names(cfams):
     """ Print the Color Family Name instead of printing out each element 
 
-        This function is useful in logging the colors used, especially if random color families are fetched.
+        This function is useful when logging the colors used, especially if color families are fetched randomly.
 
         Parameters
         ----------
@@ -407,7 +407,7 @@ def print_color_family_names(cfams):
     return return_str
 
 
-def get_random_color(n: int, low: int = 0, high: int = 148) -> List:
+def get_random_color(n: int = 1, low: int = 0, high: int = 148) -> List:
     """ Get a completely random color
 
         If you specify a `low` and `high` you can pick the colors from a specific range of CSS4 Colors 
@@ -415,7 +415,7 @@ def get_random_color(n: int, low: int = 0, high: int = 148) -> List:
         Parameters
         ----------
         n : int
-            number of colors desired
+            number of colors desired. Default is 1. If n is 1, just the color_name is return, not a list
 
         low : int
             lower end to pick range of mcolornames (Default is 0)
@@ -431,7 +431,11 @@ def get_random_color(n: int, low: int = 0, high: int = 148) -> List:
     """
 
     # TODO: Need to handle replacement=True/False later
-    return [mcolor_names[np.random.randint(low=low, high=high)] for _ in range(n)]
+    colors = [mcolor_names[np.random.randint(low=low, high=high)] for _ in range(n)]
+    if n == 1:
+        return colors[0]
+    else:
+        return colors
 
 
 def get_next_color(

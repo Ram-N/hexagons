@@ -184,7 +184,8 @@ class Hex():
         ----------
 
         dist : float
-            distance from the hexagon center
+            distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+            `dist` goes from 0 to 1, and gets multiplied by the `in-radius` of the hexagon.
 
         theta-offset : float or int
             Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.
@@ -200,6 +201,14 @@ class Hex():
 
         
         """
+        if dist == 0: #just return the center point
+            return(self.x, self.y)
+
+        inradius = self.h/2 if self.flat else self.w/2
+        dist = dist*inradius #convert fractional distance to hexagonal size units
+        theta_offset += 90
+
+
         pts = []
         if index is None:
             for v in range(6):
@@ -508,11 +517,45 @@ class Hex():
                 self.render_polygon(pt_list=poly, include_center=include_center, **kwargs)
 
     def point(self, pt_name, action=None, index=None, dist=None, theta=None, ax=None, **kwargs):
-        """ Draw a Polygon to connect specific vertices and optionally center"""
+        """ Return one or six points in the hexagon based on specifications.
+        
+        
+        Parameters
+        ----------
 
+        pt-name: string
+            Name of the point type desired: Allowable values are `center`, `vertex`, `vertices`, 
+            `spokes`, `edge(s)`, `apothem`
+
+        dist : float
+            distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+            `dist` goes from 0 to 1, and gets multiplied by the `in-radius` of the hexagon.
+
+        theta: float or int
+            Angle (in degrees). 
+
+        index: None or integer
+            index specifies which spoke or apothem to use for theta offset.
+            If index is None, then all 6 are returned
+
+        Returns
+        -------
+        List of 6 new points, in [(x1,y1), (x2,y2) ...] format
+            If `index` is specified, then only one point is returned
+    
+        
+        """
 
         if pt_name == 'center':
-            return((self.x, self.y))
+            if dist =='random' or (dist is None):
+                dist = np.random.random()
+
+            if theta is None:
+                theta = np.random.randint(60)
+
+            return(self.get_points_center_rtheta(dist, theta_offset=theta, index=index))
+
+
         if self.verts is None:
             self.verts = self.get_verts()
 
