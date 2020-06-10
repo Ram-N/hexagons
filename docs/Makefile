@@ -7,7 +7,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = build
-GH_PAGES_SOURCES = source Makefile
+GH_PAGES_SOURCES = source Makefile ../*.py
 
 # Put it first so that "make" without argument is like "make help".
 help:
