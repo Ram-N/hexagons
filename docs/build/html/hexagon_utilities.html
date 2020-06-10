@@ -89,6 +89,8 @@
 <li class="toctree-l2"><a class="reference internal" href="plot_functions.html">plot_functions module</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="example_voronoi.html">Example: Voronoi Hexagonal Tiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_voronoi.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 
             
@@ -197,7 +199,8 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center</p></li>
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>in-radius</cite> of the hexagon.</p></li>
 <li><p><strong>theta-offset</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.</p></li>
 <li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
 If index is None, then all 6 are returned</p></li>
@@ -258,7 +261,26 @@ To be on the edge, theta gets fixed</p>
 <dl class="method">
 <dt id="hexagon_utilities.Hex.point">
 <code class="sig-name descname">point</code><span class="sig-paren">(</span><em class="sig-param">pt_name</em>, <em class="sig-param">action=None</em>, <em class="sig-param">index=None</em>, <em class="sig-param">dist=None</em>, <em class="sig-param">theta=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw a Polygon to connect specific vertices and optionally center</p>
+<dd><p>Return one or six points in the hexagon based on specifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pt-name</strong> (<em>string</em>) – Name of the point type desired: Allowable values are <cite>center</cite>, <cite>vertex</cite>, <cite>vertices</cite>,
+<cite>spokes</cite>, <cite>edge(s)</cite>, <cite>apothem</cite></p></li>
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>in-radius</cite> of the hexagon.</p></li>
+<li><p><strong>theta</strong> (<em>float or int</em>) – Angle (in degrees).</p></li>
+<li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
+If index is None, then all 6 are returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If <cite>index</cite> is specified, then only one point is returned</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List of 6 new points, in [(x1,y1), (x2,y2) ..] format</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
