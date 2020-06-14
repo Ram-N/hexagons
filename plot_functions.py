@@ -3,6 +3,24 @@ import logging
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+from math import sqrt
+
+
+def distance_pt_to_pt(pt1, pt2):
+    """Returns Euclidean distance between pt1(x,y) and pt2(x,y)
+
+    Parameters
+    ----------
+
+    pt1 : tuple (x,y) of float or ints
+        The (x,y) coordinates of point 1
+
+    pt2 : tuple (x,y) of float or ints
+        The (x,y) coordinates of point 2
+
+    """
+
+    return sqrt( (pt2[0] - pt1[0])**2 + (pt2[1]- pt1[1])**2 )
 
 
 def draw_line(xy1, xy2, ax, **kwargs):
@@ -41,7 +59,7 @@ def save_file(fig, title=None, nbk=None, num_rows=None, num_cols=None, details=N
 
         #https://stackoverflow.com/questions/4804005/matplotlib-figure-facecolor-background-color
         #if you want the background color saved... you must get_facecolor()
-        plt.savefig(f'../images/temp/{fn+dtstr}.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
+        plt.savefig(f'images/temp/{fn+dtstr}.jpg', facecolor=fig.get_facecolor(), edgecolor='none')
 
         logging.info(f'Saved to ../images/temp/{fn+dtstr}.jpg')
 
@@ -86,3 +104,16 @@ def bezier_curve(start_pt, end_pt, mid_pt, resolution=1000):
         y2 = a2*x2 + b2
 
     return bez_pts
+
+
+def slope(xy1, xy2):
+    x1, y1 = xy1
+    x2, y2 = xy2
+          
+    return (y2-y1)/(x2-x1)
+
+def degree_slope(xy1, xy2):
+    x1, y1 = xy1
+    x2, y2 = xy2
+    angle = np.rad2deg(np.arctan2(y2 - y1, x2 - x1))
+    return(angle)

@@ -158,23 +158,41 @@ class Hex():
         Note that these points may or may not be on an edge.
         To be on the edge, theta gets fixed
 
+        Parameters
+        ----------
+
+        dist : float
+            distance from the hexagon vertex, in hexagon-size units. Note: This is not absolute distance. Typically
+            `dist` goes from 0 to 1, and gets multiplied by the `size` of the hexagon.
+
+        theta : float or int
+            Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.
+            theta can take on 120 degrees, ranging from -30 to + 90, for the point to stay Inside the hexagon
+
+
         """
+
+        dist = dist*self.size #convert fractional distance to hexagonal size units
+
+        if self.verts is None:
+            self.verts = self.get_verts()
+
+
         pts = []
         for v in range(6):
             pts.append(
             (self.verts[v][0] + dist * sin( (-60 * (v+1) + theta) * PI/180), #x
             self.verts[v][1] + dist * cos( (-60 * (v+1) + theta) * PI/180))  #y
             )
-
         return pts
 
     def get_edge_midpoints(self):
         '''Returns 6 points that are in the middle of each of the 6 Edges'''
         
         if self.flat:
-            return self.get_points_dist_from_vertex(self.size/2, 30)
+            return self.get_points_dist_from_vertex(0.5, 30)
         else:
-            return self.get_points_dist_from_vertex(self.size/2, 60)
+            return self.get_points_dist_from_vertex(0.5, 60)
 
 
     def get_points_center_rtheta(self, dist, theta_offset, index=None):
@@ -197,7 +215,7 @@ class Hex():
         Returns
         -------
         list
-        List of 6 new points, in [(x1,y1), (x2,y2) ...] format
+            List of 6 new points, in [(x1,y1), (x2,y2) ...] format
 
         
         """
@@ -227,35 +245,56 @@ class Hex():
         return pts
 
 
-    def get_points_to_points_rtheta(self, pt6, dist, theta_offset):
+    def get_points_to_points_rtheta(self, pt, dist_frac, theta_offset, index=None):
         """ Return 6 points that are dist-theta away from the 6 other pts 
 
         Parameters
         ----------
-        pt6 : list-like
-            pt6 should be a list with format   [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]
+        pt : list-like or tuple
+            pt should have a length of 6 or 1. It should be a list with format
+            [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)] 
+            or a tuple (x,y)
 
-        dist : float
-            distance from the pt6 points.
+        dist_frac : float
+            distance from the pt6 points in hexagon height units. Typically a float in (0, 1)
 
         theta-offset : float or int
             Angle (in degrees). Note that the angle is w.r.t to two points. It is not absolute.
 
+        index: None or integer
+            index specifies which spoke or apothem to use for theta offset.
+            If index is None, then 6 points are returned
+
         Returns
         -------
         list
-        List of 6 new points, in [(x1,y1), (x2,y2) ...] format
+            List of 6 new points, in [(x1,y1), (x2,y2) ...] format
         
             
         """
+        inradius = self.h/2 if self.flat else self.w/2
+        dist = dist_frac*inradius #convert fractional distance to hexagonal size units
 
-        pts = []
-        for p in range(6):
-            pts.append(
-            (pt6[p][0] + dist * sin( (-60 * (p+1) + theta_offset) * PI/180), #x
-            pt6[p][1]  + dist * cos( (-60 * (p+1) + theta_offset) * PI/180))  #y
-            )
-        return pts
+        if index is None and len(pt) != 6:
+            print(f'pt: {pt} Length: {len(pt)}')
+            print('Error: Either pt should be 6 points, or Index should be specifed. Index is None.')
+            return None
+
+        new_pts = []
+        if index is None:
+            for p in range(6):
+                new_pts.append(
+                (pt[p][0] + dist * sin( (-60 * (p+1) + theta_offset) * PI/180), #x
+                pt[p][1]  + dist * cos( (-60 * (p+1) + theta_offset) * PI/180))  #y
+                )
+                return new_pts
+        elif index in range(6):
+            return(pt[0] + dist * sin( (-60 * (index) + 150 + theta_offset) * PI/180), #x
+                pt[1]  + dist * cos( (-60 * (index) + 150 + theta_offset) * PI/180) #y
+                )  
+        else:
+            print(f'Invalid Index {index} specified to function. It must be None or one of 0..5')
+            return(None)
         
 
 
@@ -337,20 +376,34 @@ class Hex():
         return ax,
 
 
-    def render_spokes(self, vlist=None, ax=None, **kwargs):
-        """ Draws spokes from center to specific vertices """
+    def render_spokes(self, index=None, ax=None, **kwargs):
+        """ Draws spokes from center to specific vertices 
+        
+        
+        Parameters
+        ----------
+        index: None or integer
+            index specifies which vertex to use when drawing the spoke
+            If index is None, then all 6 spokes are drawn
+
+        Returns
+        -------
+        None
+            One or more spokes are drawn as Line2D lines.
+
+        """
                 
         if ax is None:
             ax = plt.gca()
 
-        if vlist is None:
-            vlist=range(6)
+        if index is None:
+            index=range(6)
             
         if self.verts is None:
             self.verts = self.get_verts()
 
         #for each v in vlist, connect v to the center by drawing a Line2D
-        for v in vlist:
+        for v in index:
             x_arr = [self.verts[v][0], self.x]
             y_arr = [self.verts[v][1], self.y]            
             edge = Line2D([x_arr],[y_arr], **kwargs)
@@ -385,13 +438,14 @@ class Hex():
 
             Useful for drawing polygon _within_ the existing hexagonal space. For example, smaller hexagons inside the main grid.
         
-            Parameters: 
+            Parameters
+            =========== 
 
-                polygon_sides = number of sides in the regular polygon
+            polygon_sides = number of sides in the regular polygon
 
-                polygon_size = Size of the polygon's side to be drawn. (defaults to hexagon's size)
-                angle_radians = will rotate the regular polygon by radians angle
-                fc:  will color the face
+            polygon_size = Size of the polygon's side to be drawn. (defaults to hexagon's size)
+            angle_radians = will rotate the regular polygon by radians angle
+            fc:  will color the face
 
         """
                 
@@ -464,12 +518,11 @@ class Hex():
     def render_circle(self, incircle=True, ax=None, **kwargs):
         """ Draw the incircle with raduis equal to the apothem of the hexagon
         
-        Parameters:
+        Parameters
+        ----------
         
         incircle: Boolean, optional
-            If True, indicates that the incircle should be rendered
-            If False, indicates that the circumcircle should be rendered
-            Default is True.
+            If True, indicates that the incircle should be rendered. If False, indicates that the circumcircle should be rendered. Default is True.
 
         """
 
@@ -487,7 +540,8 @@ class Hex():
     def render_arc(self, incircle=True, ax=None, **kwargs):
         """ Draw the incircle with raduis equal to the apothem of the hexagon
         
-        Parameters:
+        Parameters
+        ----------
         
         incircle: Boolean, optional
             If True, indicates that the incircle should be rendered
@@ -508,7 +562,13 @@ class Hex():
         ax.add_patch(h_arc)
 
     def decorate(self, poly=None, line=None, include_center=True, ax=None, **kwargs):
-        """ Draw a Polygon to connect specific vertices and optionally center"""
+        """ Draw a Polygon to connect specific vertices and optionally center
+        
+        
+        Parameters
+        ----------
+
+        """
 
         if poly is not None:
             if poly not  in ALLOWABLE_POLYGONS:                
@@ -561,10 +621,12 @@ class Hex():
 
         if pt_name in ['verts', 'vertices', 'vertex']:
 
-            if index is not None:
-                return(self.verts[index])
-            else:
-                return(self.verts)
+            if dist =='random' or (dist is None):
+                dist = np.random.random()
+
+            if theta is None:
+                theta = np.random.randint(60)
+            return(self.get_points_dist_from_vertex(dist, theta))
 
         if pt_name in ['edge', 'edges', 'e']:
             if action =='trisect':
@@ -609,6 +671,53 @@ class Hex():
 
             return(self.get_points_center_rtheta(dist, theta_offset, index))
                 
+    def line(self, start_point, end_point, start_pos=None, end_pos=None, index=None, line_len=None, theta=None, ax=None, **kwargs):
+        """ Draw one or multiple lines in the hexagon based on specifications.
+                
+        Parameters
+        ----------
+
+        start_point: string
+            Name of the point type desired: Allowable values are `center`, `vertex`, `vertices`, 
+            `edge(s)`, `random`, 'e1' ...'e5' or 'v1'...'v5
+
+        end_point: string
+            Name of the point type desired: Allowable values are `center`, `vertex`, `vertices`, 
+            `edge(s)`, `random`, 'e1' ...'e5' or 'v1'...'v5
+
+        dist : float
+            distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+            `dist` goes from 0 to 1, and gets multiplied by the `in-radius` of the hexagon.
+
+        theta: float or int
+            Angle (in degrees). 
+
+        index: None or integer
+            index specifies which spoke or apothem to use for theta offset.
+            If index is None, then all 6 are returned
+
+        Returns
+        -------
+        None: None
+            The line(s) get plotted, so nothing is returned
+    
+        
+        """
+        VERT_NUM = ['v0', 'v1', 'v2','v3','v4','v5']    
+        VERT_NAMES = ['vertices', 'vertex'] + VERT_NUM
+
+        if start_point == 'center' and end_point in VERT_NAMES: #one of more spokes
+            if end_point not in VERT_NUM: # draw all spokes
+                self.render_spokes()
+            else:
+                try:
+                    v_index=[]
+                    v_index.append(int(end_point[-1]))
+                except:
+                    print(end_point, type(end_point))
+                    print(int(end_point[-1]))
+                    print(f'end_point specification incorrect. Should be one of {VERT_NUM}')
+                self.render_spokes(index=v_index)
 
 
 
