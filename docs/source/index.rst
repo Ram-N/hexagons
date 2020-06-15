@@ -11,6 +11,7 @@ Welcome to Hexagons's documentation!
    :caption: Contents: 
    
    modules
+   documentation_jupyter
    example_voronoi
 
 

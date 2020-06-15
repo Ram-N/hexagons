@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="plot_functions.html">plot_functions module</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_jupyter.html">Documentation in Jupyter Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_voronoi.html">Example: Voronoi Hexagonal Tiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_voronoi.html#indices-and-tables">Indices and tables</a></li>
 </ul>
@@ -207,11 +208,10 @@ If index is None, then all 6 are returned</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>list</em></p></li>
-<li><p><em>List of 6 new points, in [(x1,y1), (x2,y2) …] format</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p>List of 6 new points, in [(x1,y1), (x2,y2) …] format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -222,6 +222,16 @@ If index is None, then all 6 are returned</p></li>
 <dd><p>Return 6 points that are dist and angle theta away from each of the 6 vertices</p>
 <p>Note that these points may or may not be on an edge.
 To be on the edge, theta gets fixed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon vertex, in hexagon-size units. Note: This is not absolute distance. Typically
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>size</cite> of the hexagon.</p></li>
+<li><p><strong>theta</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.
+theta can take on 120 degrees, ranging from -30 to + 90, for the point to stay Inside the hexagon</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -232,22 +242,25 @@ To be on the edge, theta gets fixed</p>
 
 <dl class="method">
 <dt id="hexagon_utilities.Hex.get_points_to_points_rtheta">
-<code class="sig-name descname">get_points_to_points_rtheta</code><span class="sig-paren">(</span><em class="sig-param">pt6</em>, <em class="sig-param">dist</em>, <em class="sig-param">theta_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_to_points_rtheta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_points_to_points_rtheta</code><span class="sig-paren">(</span><em class="sig-param">pt</em>, <em class="sig-param">dist_frac</em>, <em class="sig-param">theta_offset</em>, <em class="sig-param">index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_to_points_rtheta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return 6 points that are dist-theta away from the 6 other pts</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pt6</strong> (<em>list-like</em>) – pt6 should be a list with format   [(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]</p></li>
-<li><p><strong>dist</strong> (<em>float</em>) – distance from the pt6 points.</p></li>
+<li><p><strong>pt</strong> (<em>list-like or tuple</em>) – pt should have a length of 6 or 1. It should be a list with format
+[(x0,y0), (x1,y1), (x2,y2), (x3,y3), (x4,y4), (x5,y5)]
+or a tuple (x,y)</p></li>
+<li><p><strong>dist_frac</strong> (<em>float</em>) – distance from the pt6 points in hexagon height units. Typically a float in (0, 1)</p></li>
 <li><p><strong>theta-offset</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to two points. It is not absolute.</p></li>
+<li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
+If index is None, then 6 points are returned</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>list</em></p></li>
-<li><p><em>List of 6 new points, in [(x1,y1), (x2,y2) …] format</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p>List of 6 new points, in [(x1,y1), (x2,y2) …] format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -256,6 +269,33 @@ To be on the edge, theta gets fixed</p>
 <dt id="hexagon_utilities.Hex.get_verts">
 <code class="sig-name descname">get_verts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_verts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all 6 verticles of the hex</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.line">
+<code class="sig-name descname">line</code><span class="sig-paren">(</span><em class="sig-param">start_point</em>, <em class="sig-param">end_point</em>, <em class="sig-param">start_pos=None</em>, <em class="sig-param">end_pos=None</em>, <em class="sig-param">index=None</em>, <em class="sig-param">line_len=None</em>, <em class="sig-param">theta=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw one or multiple lines in the hexagon based on specifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_point</strong> (<em>string</em>) – Name of the point type desired: Allowable values are <cite>center</cite>, <cite>vertex</cite>, <cite>vertices</cite>,
+<cite>edge(s)</cite>, <cite>random</cite>, ‘e1’ …’e5’ or ‘v1’…’v5</p></li>
+<li><p><strong>end_point</strong> (<em>string</em>) – Name of the point type desired: Allowable values are <cite>center</cite>, <cite>vertex</cite>, <cite>vertices</cite>,
+<cite>edge(s)</cite>, <cite>random</cite>, ‘e1’ …’e5’ or ‘v1’…’v5</p></li>
+<li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>in-radius</cite> of the hexagon.</p></li>
+<li><p><strong>theta</strong> (<em>float or int</em>) – Angle (in degrees).</p></li>
+<li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
+If index is None, then all 6 are returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>None</strong> – The line(s) get plotted, so nothing is returned</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -299,9 +339,9 @@ If index is None, then all 6 are returned</p></li>
 <dt id="hexagon_utilities.Hex.render_arc">
 <code class="sig-name descname">render_arc</code><span class="sig-paren">(</span><em class="sig-param">incircle=True</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_arc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the incircle with raduis equal to the apothem of the hexagon</p>
-<p>Parameters:</p>
-<dl class="simple">
-<dt>incircle: Boolean, optional</dt><dd><p>If True, indicates that the incircle should be rendered
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>incircle</strong> (<em>Boolean, optional</em>) – If True, indicates that the incircle should be rendered
 If False, indicates that the circumcircle should be rendered
 Default is True.</p>
 </dd>
@@ -318,11 +358,9 @@ Default is True.</p>
 <dt id="hexagon_utilities.Hex.render_circle">
 <code class="sig-name descname">render_circle</code><span class="sig-paren">(</span><em class="sig-param">incircle=True</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_circle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the incircle with raduis equal to the apothem of the hexagon</p>
-<p>Parameters:</p>
-<dl class="simple">
-<dt>incircle: Boolean, optional</dt><dd><p>If True, indicates that the incircle should be rendered
-If False, indicates that the circumcircle should be rendered
-Default is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>incircle</strong> (<em>Boolean, optional</em>) – If True, indicates that the incircle should be rendered. If False, indicates that the circumcircle should be rendered. Default is True.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -347,19 +385,34 @@ point to ‘complete’ the polygon to be drawn</p>
 <code class="sig-name descname">render_regular_polygon_from_center</code><span class="sig-paren">(</span><em class="sig-param">polygon_sides</em>, <em class="sig-param">polygon_size=None</em>, <em class="sig-param">angle_radians=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_regular_polygon_from_center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws a regular polygon that shares its center with hexagon</p>
 <p>Useful for drawing polygon _within_ the existing hexagonal space. For example, smaller hexagons inside the main grid.</p>
-<p>Parameters:</p>
-<blockquote>
-<div><p>polygon_sides = number of sides in the regular polygon</p>
-<p>polygon_size = Size of the polygon’s side to be drawn. (defaults to hexagon’s size)
-angle_radians = will rotate the regular polygon by radians angle
-fc:  will color the face</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>polygon_sides = number of sides in the regular polygon</strong></p></li>
+<li><p><strong>polygon_size = Size of the polygon’s side to be drawn. (defaults to hexagon’s size)</strong></p></li>
+<li><p><strong>angle_radians = will rotate the regular polygon by radians angle</strong></p></li>
+<li><p><strong>fc</strong> (<em>will color the face</em>)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="hexagon_utilities.Hex.render_spokes">
-<code class="sig-name descname">render_spokes</code><span class="sig-paren">(</span><em class="sig-param">vlist=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_spokes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">render_spokes</code><span class="sig-paren">(</span><em class="sig-param">index=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_spokes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws spokes from center to specific vertices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>None or integer</em>) – index specifies which vertex to use when drawing the spoke
+If index is None, then all 6 spokes are drawn</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One or more spokes are drawn as Line2D lines.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
