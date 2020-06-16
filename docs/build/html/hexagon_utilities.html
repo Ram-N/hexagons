@@ -91,7 +91,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_jupyter.html">Documentation in Jupyter Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_voronoi.html">Example: Voronoi Hexagonal Tiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example_voronoi.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 
             
@@ -236,8 +235,24 @@ theta can take on 120 degrees, ranging from -30 to + 90, for the point to stay I
 
 <dl class="method">
 <dt id="hexagon_utilities.Hex.get_points_on_edge">
-<code class="sig-name descname">get_points_on_edge</code><span class="sig-paren">(</span><em class="sig-param">edge=None</em>, <em class="sig-param">dist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_on_edge" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_points_on_edge</code><span class="sig-paren">(</span><em class="sig-param">edge=None</em>, <em class="sig-param">dist_frac=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_on_edge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edge</strong> (<em>int or None</em>) – edge is the edge-number from 0..5. If it is None, all 6 edges are included.</p></li>
+<li><p><strong>dist_frac</strong> (<em>float</em>) – distance from the hexagon vertex, in hexagon-size units. Note: This is not absolute distance. Typically
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>size</cite> of the hexagon.
+0 is closest to the starting vertex, 1 is the next vertex.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of new points, in [(x1,y1), (x2,y2) …] format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

@@ -144,11 +144,3 @@ the right color palette and putting the pieces together.
 
 .. image:: images/vor_final.jpg
    :width: 500   
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

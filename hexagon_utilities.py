@@ -37,8 +37,14 @@ PENTA0, PENTA1, PENTA2, PENTA3, PENTA4, PENTA5,
 
 RHOMBUSES1 = {'west': (0,1,2), 'northeast': (2,3,4), 'southwest': (4,5,0)}
 RHOMBUSES2 = {'northwest': (1,2,3), 'east': (3,4,5),  'south':(5, 0,1)}
-SPOKES_3A = (1,3,5)
-SPOKES_3B = (0,2,4)
+SPOKES_3A = (1, 3, 5)
+SPOKES_3B = (0, 2, 4)
+
+VERT_NUM = ['v0', 'v1', 'v2','v3','v4','v5']    
+VERT_NAMES = ['vertices', 'vertex'] + VERT_NUM
+EDGE_NUM = ['e0', 'e1', 'e2','e3','e4','e5']    
+EDGE_NAMES = ['edge', 'edges'] + EDGE_NUM
+
 
 
 def hex_corner(center, size, i, flat=True):
@@ -60,6 +66,7 @@ def get_pt_rtheta_away(pt, dist, theta):
     return(x,y)
 
 
+#deprecated. Remove?
 class Point():
     def __init__(self, x, y):
         '''Defines x and y coordinates'''
@@ -121,9 +128,27 @@ class Hex():
         return self.verts
 
 
-    def get_points_on_edge(self, edge=None, dist=None):
+    def get_points_on_edge(self, edge=None, dist_frac=None):
         """
-        Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge        
+        Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge     
+
+        Parameters
+        ----------
+
+        edge: int or None
+            edge is the edge-number from 0..5. If it is None, all 6 edges are included.
+
+        dist_frac : float
+            distance from the hexagon vertex, in hexagon-size units. Note: This is not absolute distance. Typically
+            `dist` goes from 0 to 1, and gets multiplied by the `size` of the hexagon. 
+            0 is closest to the starting vertex, 1 is the next vertex.
+
+        Returns
+        -------
+        list
+            List of new points, in [(x1,y1), (x2,y2) ...] format
+
+
         """
 
         if self.flat:
@@ -131,8 +156,10 @@ class Hex():
         else:
             theta_offset = -60
 
-        if not dist: #then a random distance (0, size) is generated
+        if dist_frac is None: #then a random distance (0, size) is generated
             dist = np.random.random() * self.size
+        else:  
+            dist = dist_frac * self.size
 
         new_pts = []
         if edge not in range(6):
@@ -630,9 +657,14 @@ class Hex():
 
         if pt_name in ['edge', 'edges', 'e']:
             if action =='trisect':
-                set1 = self.get_points_on_edge(edge=index, dist=self.size/3)
-                set2 = self.get_points_on_edge(edge=index, dist=self.size* 2/3)
+                set1 = self.get_points_on_edge(edge=index, dist_frac=self.size/3)
+                set2 = self.get_points_on_edge(edge=index, dist_frac=self.size* 2/3)
                 return(list(set1 + set2))
+            elif action is None:
+                if dist =='random' or (dist is None):
+                    dist = np.random.random()
+
+                return self.get_points_on_edge(edge=index, dist_frac=dist)
 
 
 
@@ -703,8 +735,9 @@ class Hex():
     
         
         """
-        VERT_NUM = ['v0', 'v1', 'v2','v3','v4','v5']    
-        VERT_NAMES = ['vertices', 'vertex'] + VERT_NUM
+        if ax is None:
+            ax = plt.gca()
+
 
         if start_point == 'center' and end_point in VERT_NAMES: #one of more spokes
             if end_point not in VERT_NUM: # draw all spokes
@@ -719,8 +752,49 @@ class Hex():
                     print(f'end_point specification incorrect. Should be one of {VERT_NUM}')
                 self.render_spokes(index=v_index)
 
+        if start_point in EDGE_NAMES:
+            if end_point in EDGE_NAMES:
+                st_edge, end_edge = -1, -1
+                while st_edge == end_edge:
+                    st_edge = _determine_edge(start_point)
+                    end_edge = _determine_edge(end_point)
+                    #add a circuit breaker
+                stpos = _determine_position(start_pos)
+                endpos = _determine_position(end_pos)
+                st = self.point(pt_name='edge', dist=stpos, index=st_edge)[0]
+                end = self.point(pt_name='edge', dist=endpos, index=end_edge)[0]
+                eeline = Line2D([st[0], end[0]],[st[1], end[1]], **kwargs)
+                ax.add_line(eeline)
+                return ax,
 
 
+
+def _determine_position(pos):
+    if pos is None or pos in ['random', 'rnd', 'rand']:
+        return(np.random.random())
+    if pos == 'mid':
+        return(0.5)
+    if pos in ['med', 'medium']:
+        return np.random.uniform(0.33, 0.66)
+    if pos in ['near', 'low']:
+        return np.random.uniform(0, 0.33)
+    if pos in ['high', 'far']:
+        return np.random.uniform(0.66, 1)        
+    if isinstance(pos, (int, float)):
+        return(pos)
+    else: 
+        print(f'{pos} is not a valid Position argument')
+        return None
+
+
+def _determine_edge(pt_name):
+    if pt_name not in EDGE_NAMES:
+        print(f'{pt_name} is not a valid Edge reference')
+        return None
+    if pt_name in EDGE_NUM:
+        return(int(pt_name[-1]))
+    else: #random
+        return(np.random.randint(6))
 
 class HexGrid():
 
@@ -801,9 +875,6 @@ class HexGrid():
             for h in self.hlist:
                 h.v_connect(v_pairs, **kwargs)
                             
-        plt.axis('on') 
-        ax.axis('scaled')
-
         
     def render_grid_spokes(self, c_to_vlist=None, **kwargs):
         """ For entire HexGrid connect center to specified vertices"""
@@ -811,8 +882,6 @@ class HexGrid():
             for h in self.hlist:
                 h.render_spokes(c_to_vlist, **kwargs)
             
-        plt.axis('on')   
-        ax.axis('scaled')
 
     def render_grid_polygons(self, pt_list=None, **kwargs):
         """ For entire HexGrid connect center to vlist"""
@@ -830,11 +899,6 @@ class HexGrid():
                 plt.scatter(v.x, v.y, **kwargs)
 
                 plt.scatter(h.x, h.y, **kwargs)
-
-        #plt.axis('scaled')
-        plt.axis('on')  
-        ax.axis('scaled')
-
 
 
 def get_hexgrid_centers(hg):
