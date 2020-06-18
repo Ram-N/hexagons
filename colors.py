@@ -1,7 +1,8 @@
 import matplotlib.colors as mcolors
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
 from typing import List, Dict, Tuple
-
 
 colors_d = mcolors.CSS4_COLORS
 # Sort colors by hue, saturation, value and name
@@ -222,6 +223,8 @@ LOW_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] < 0.5]
 
 HIGH_SAT = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[1] > 0.5]
 
+LOW_V = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[2] < 0.7]
+HIGH_V = [name for tup, name in [(t, x) for t, x in by_hsv] if tup[2] >= 0.7]
 
 # Low SATURATION COLOR sets (PASTEL colors)
 BLACK_WHITES_LOW_SAT = [
@@ -464,12 +467,20 @@ def get_next_color(
     return (chosen_color, curr_fam_index, col_index)
 
 
-def get_rnd_family():
+def get_random_colorfamily():
+    """ Will return one COLOR_Family """
     n = np.random.randint(len(color_sets))
     return color_sets[n]
 
 
-def get_rnd_color_from_family(cfamily):
+def get_random_color_from_family(cfamily):
+    """ Will return one colorname from the input list of colors 
+    
+    Parameters
+    ==========
+    cfamily: List
+        List of names of colors
+    """
     n = np.random.randint(len(cfamily))
     return cfamily[n]
 
@@ -503,35 +514,50 @@ def get_n_random_color_families(n: int = 2) -> List:
     return fam_list
 
 
-def _display_color_strip(color_family, fc_bg="w"):
-    """ A quick way to print a strip of colors given a list of colors """
+def display_color_strip(color_family, fc_bg="w"):
+    """ A quick way to print a strip of colors given a list of colors 
+    
+    Parameters
+    ==========
 
-    size = 1
-    num_rows = (len(color_family) - 1) // 10 + 1
-    hg = HexGrid(num_rows, 10, size, flat=False)
+    color_family: List
+        List of names of colors that Matplotlib recognizes. Typically, from `CSS4.colors <https://matplotlib.org/3.1.0/tutorials/colors/colors.html>`_
+
+    fc_bg: color
+        A single color to use as the background. Defaults to `'white'`
+
+    """
+
+    num_rows = (len(color_family) - 1) // 8 + 1
 
     fig, ax = plt.subplots(figsize=(12, num_rows))
     fig.patch.set_facecolor(fc_bg)
 
-    for idx, h in enumerate(hg.hlist):
-        try:
-            fc = color_family[idx]
-            border = "black"
-            h.render(fc=fc, color=border, lw=2)
-            # lab = str(idx) +'\n' + ', '.join([str(c) for c in (h.xc,h.yc,h.zc)])
-            # plot_label((h.x,h.y), lab)
-        except:
-            pass
+    for row in range(num_rows):
+        for x in range(8):
+            try:
+                r1 = patches.Rectangle(
+                    (x * 12, 10 * row), 10, 7, color=color_family[8 * (row) + x]
+                )
+                ax.add_patch(r1)
+            except:
+                pass
 
     for row in range(num_rows, 0, -1):
         print(f"Row {row}: ", end="")
-        for c in range(10):
+        for c in range(8):
             try:
-                print(color_family[10 * (row - 1) + c], end=" ")
+                print(color_family[8 * (row - 1) + c], end=" ")
             except:
                 pass
-            if not (c + 1) % 10:
+            if not (c + 1) % 8:
                 print("\n")
 
     plt.axis("equal")
-    plt.title(namestr(color_family)[0])
+    name = _namestr(color_family)
+    if name:
+        plt.title(_namestr(color_family)[0])
+
+
+def _namestr(obj, namespace=globals()):
+    return [name for name in namespace if namespace[name] is obj]
