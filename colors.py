@@ -2,7 +2,7 @@ import matplotlib.colors as mcolors
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
-from typing import List, Dict, Tuple
+from typing import List, Dict  # , Tuple
 
 colors_d = mcolors.CSS4_COLORS
 # Sort colors by hue, saturation, value and name
@@ -176,7 +176,7 @@ ORANGES = [
 ]
 
 
-color_sets = [
+COLOR_SETS = [
     REDS,
     ORANGES,
     PINKS,
@@ -390,7 +390,8 @@ YELLOWS_HIGH_V = [
 def print_color_family_names(cfams):
     """ Print the Color Family Name instead of printing out each element 
 
-        This function is useful when logging the colors used, especially if color families are fetched randomly.
+        This function is useful when logging the colors used, 
+        especially if color families are fetched randomly.
 
         Parameters
         ----------
@@ -469,8 +470,8 @@ def get_next_color(
 
 def get_random_colorfamily():
     """ Will return one COLOR_Family """
-    n = np.random.randint(len(color_sets))
-    return color_sets[n]
+    n = np.random.randint(len(COLOR_SETS))
+    return COLOR_SETS[n]
 
 
 def get_random_color_from_family(cfamily):
@@ -506,7 +507,7 @@ def get_n_random_color_families(n: int = 2) -> List:
     for _ in range(n):
         done = 0
         while not done:
-            fam1 = get_rnd_family()
+            fam1 = get_random_colorfamily()
             if len(fam1) >= 6:
                 done = 1
         fam_list.append(fam1)
@@ -527,6 +528,9 @@ def display_color_strip(color_family, fc_bg="w"):
         A single color to use as the background. Defaults to `'white'`
 
     """
+
+    if isinstance(color_family, str):
+        color_family = [color_family]
 
     num_rows = (len(color_family) - 1) // 8 + 1
 
@@ -561,3 +565,92 @@ def display_color_strip(color_family, fc_bg="w"):
 
 def _namestr(obj, namespace=globals()):
     return [name for name in namespace if namespace[name] is obj]
+
+
+ALLOWABLE_COLOR_ATTRS = ["random", "hue", "saturation", "sat", "value", "dark", "light"]
+ALLOWABLE_COLOR_ORDERS = ["incr", "increasing", "decr", "decreasing"]
+
+# hsv is of format ((h,s,v), "name")
+sorted_hue = sorted(by_hsv, key=lambda x: x[0][0])
+sorted_sat = sorted(by_hsv, key=lambda x: x[0][1])
+sorted_value = sorted(by_hsv, key=lambda x: x[0][2])
+
+hue_names = [name for _, name in sorted_hue]
+sat_names = [name for _, name in sorted_sat]
+value_names = [name for _, name in sorted_value]
+
+
+def get_color_sequence(
+    n: int = 6, attr: str = None, order: str = "incr", start_color=None, step: int = 1
+) -> List:
+    """ Returns a List of Color names, based on arguments specified
+
+        If you specify a `low` and `high` you can pick the colors from a specific range of CSS4 Colors 
+
+
+        Parameters
+        ----------
+        n : int, optional
+            number of colors desired. Default is 6. If n is 1, just the color_name is return, not a list
+
+        attr : str, optional
+            Must be one of ['random', 'hue', 'sat|uration', 'value', 'dark', 'light'] or a color family name. 
+            If 'random,' then order is ignored. Default `attr` is `hue`
+
+        order : str, optional
+            Must be either 'incr|easing' or 'decr|easing.' Default `order` is "increasing"
+            
+
+        Returns
+        -------
+        List
+            List of n colors . Each element of the list is a color name. If n is 1, then just the name is returned, not a List. 
+
+        Examples
+        --------
+        >>> get_color_sequence()
+        ['red', 'mistyrose', 'salmon', 'tomato', 'darksalmon', 'coral']
+        >>> get_color_sequence(1)
+        'oldlace'
+        >>> get_color_sequence(n=5, attr='Sat', order='incr')
+        ['coral', 'orangered', 'lightsalmon', 'sienna', 'seashell']
+        >>> get_color_sequence(n=3, attr='hue', order='incr', step=4)
+        ['red', 'darksalmon', 'sienna']
+
+
+    """
+    # TODO Needed?
+    if n > 100:
+        raise Exception(f"{n} is too large. Should be less than 100.")
+
+    if not attr:
+        attr = "hue"
+    if attr.lower() not in ALLOWABLE_COLOR_ATTRS:
+        raise Exception(
+            f"Unknown attr {attr}. Should be one of {ALLOWABLE_COLOR_ATTRS}"
+        )
+
+    if order.lower() not in ALLOWABLE_COLOR_ORDERS:
+        raise Exception(
+            f"Unknown attr {order}. Should be one of {ALLOWABLE_COLOR_ORDERS}"
+        )
+
+    if start_color is None:
+        start_color = np.random.randint(len(sorted_sat) - n * step)
+
+    if attr in ["sat" or "saturation"]:
+        chosen_list = sat_names
+    elif attr in ["val" or "value"]:
+        chosen_list = value_names
+    else:
+        chosen_list = hue_names
+
+    if order in ["incr", "increasing"]:
+        _colors = chosen_list[start_color : start_color + (n * step) : step]
+    else:
+        _colors = chosen_list[start_color + (n * step) : start_color : -1 * step]
+
+    if n == 1:
+        return _colors[0]
+    else:
+        return _colors

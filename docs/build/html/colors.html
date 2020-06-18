@@ -160,6 +160,54 @@
   <div class="section" id="module-colors">
 <span id="colors-module"></span><h1>colors module<a class="headerlink" href="#module-colors" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="colors.display_color_strip">
+<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">display_color_strip</code><span class="sig-paren">(</span><em class="sig-param">color_family</em>, <em class="sig-param">fc_bg='w'</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.display_color_strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>A quick way to print a strip of colors given a list of colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color_family</strong> (<em>List</em>) – List of names of colors that Matplotlib recognizes. Typically, from <a class="reference external" href="https://matplotlib.org/3.1.0/tutorials/colors/colors.html">CSS4.colors</a></p></li>
+<li><p><strong>fc_bg</strong> (<em>color</em>) – A single color to use as the background. Defaults to <cite>‘white’</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="colors.get_color_sequence">
+<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_color_sequence</code><span class="sig-paren">(</span><em class="sig-param">n: int = 6</em>, <em class="sig-param">attr: str = None</em>, <em class="sig-param">order: str = 'incr'</em>, <em class="sig-param">start_color=None</em>, <em class="sig-param">step: int = 1</em><span class="sig-paren">)</span> &#x2192; List<a class="headerlink" href="#colors.get_color_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a List of Color names, based on arguments specified</p>
+<p>If you specify a <cite>low</cite> and <cite>high</cite> you can pick the colors from a specific range of CSS4 Colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int, optional</em>) – number of colors desired. Default is 6. If n is 1, just the color_name is return, not a list</p></li>
+<li><p><strong>attr</strong> (<em>str, optional</em>) – Must be one of [‘random’, ‘hue’, ‘sat|uration’, ‘value’, ‘dark’, ‘light’] or a color family name.
+If ‘random,’ then order is ignored. Default <cite>attr</cite> is <cite>hue</cite></p></li>
+<li><p><strong>order</strong> (<em>str, optional</em>) – Must be either ‘incr|easing’ or ‘decr|easing.’ Default <cite>order</cite> is “increasing”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of n colors . Each element of the list is a color name. If n is 1, then just the name is returned, not a List.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_color_sequence</span><span class="p">()</span>
+<span class="go">[&#39;red&#39;, &#39;mistyrose&#39;, &#39;salmon&#39;, &#39;tomato&#39;, &#39;darksalmon&#39;, &#39;coral&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_color_sequence</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&#39;oldlace&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_color_sequence</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s1">&#39;Sat&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;incr&#39;</span><span class="p">)</span>
+<span class="go">[&#39;coral&#39;, &#39;orangered&#39;, &#39;lightsalmon&#39;, &#39;sienna&#39;, &#39;seashell&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_color_sequence</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">attr</span><span class="o">=</span><span class="s1">&#39;hue&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;incr&#39;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">[&#39;red&#39;, &#39;darksalmon&#39;, &#39;sienna&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="colors.get_key_given_item">
 <code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_key_given_item</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">_dict: Dict</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.get_key_given_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of keys from a dictionary, given its value. Reverse lookup</p>
@@ -210,20 +258,28 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="colors.get_rnd_color_from_family">
-<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_rnd_color_from_family</code><span class="sig-paren">(</span><em class="sig-param">cfamily</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.get_rnd_color_from_family" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="colors.get_random_color_from_family">
+<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_random_color_from_family</code><span class="sig-paren">(</span><em class="sig-param">cfamily</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.get_random_color_from_family" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will return one colorname from the input list of colors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cfamily</strong> (<em>List</em>) – List of names of colors</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
-<dt id="colors.get_rnd_family">
-<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_rnd_family</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colors.get_rnd_family" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="colors.get_random_colorfamily">
+<code class="sig-prename descclassname">colors.</code><code class="sig-name descname">get_random_colorfamily</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colors.get_random_colorfamily" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will return one COLOR_Family</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="colors.print_color_family_names">
 <code class="sig-prename descclassname">colors.</code><code class="sig-name descname">print_color_family_names</code><span class="sig-paren">(</span><em class="sig-param">cfams</em><span class="sig-paren">)</span><a class="headerlink" href="#colors.print_color_family_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the Color Family Name instead of printing out each element</p>
-<p>This function is useful when logging the colors used, especially if color families are fetched randomly.</p>
+<p>This function is useful when logging the colors used,
+especially if color families are fetched randomly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>cfams</strong> (<em>List</em>) – One or more Color Families, pre-specified. Each element is a list of colornames</p>
