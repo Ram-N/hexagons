@@ -91,6 +91,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_jupyter.html">Documentation in Jupyter Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_voronoi.html">Example: Voronoi Hexagonal Tiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hexagons_glossary.html">Glossary Hexagons</a></li>
 </ul>
 
             
@@ -161,7 +162,7 @@
 <span id="hexagon-utilities-module"></span><h1>hexagon_utilities module<a class="headerlink" href="#module-hexagon_utilities" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="hexagon_utilities.Hex">
-<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">Hex</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">size=1</em>, <em class="sig-param">id=None</em>, <em class="sig-param">flat=True</em>, <em class="sig-param">h=None</em>, <em class="sig-param">w=None</em>, <em class="sig-param">cube=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">Hex</code><span class="sig-paren">(</span><em class="sig-param">x=0</em>, <em class="sig-param">y=0</em>, <em class="sig-param">size=1</em>, <em class="sig-param">id=None</em>, <em class="sig-param">flat=True</em>, <em class="sig-param">w=None</em>, <em class="sig-param">cube=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents one Hexagon. Typically on a hexagonal grid</p>
 <p>The hexagon can be flat topped (flat = True) or pointy-topped (flat=False)
@@ -339,6 +340,23 @@ If index is None, then all 6 are returned</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="hexagon_utilities.Hex.point_distance">
+<code class="sig-name descname">point_distance</code><span class="sig-paren">(</span><em class="sig-param">pt</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.point_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance from any xy_point to the hexagon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pt</strong> (<em>Tuple</em>) – pt should be a tuple (x,y) or [x,y]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Euclidean Distance from the point pt to the nearest side of the hexagon</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="hexagon_utilities.Hex.render">
 <code class="sig-name descname">render</code><span class="sig-paren">(</span><em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws the edges of a given Hexagon. fc will color the face.</p>
@@ -378,6 +396,12 @@ Default is True.</p>
 <dd class="field-odd"><p><strong>incircle</strong> (<em>Boolean, optional</em>) – If True, indicates that the incircle should be rendered. If False, indicates that the circumcircle should be rendered. Default is True.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_parallel_line">
+<code class="sig-name descname">render_parallel_line</code><span class="sig-paren">(</span><em class="sig-param">edge_name</em>, <em class="sig-param">dist_frac</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_parallel_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a Line parallel to a named edge at the specified distance</p>
 </dd></dl>
 
 <dl class="method">
@@ -498,6 +522,31 @@ And there is a rectangle (a bounding box) for the grid, since it has to be rende
 <dt id="hexagon_utilities.hex_corner">
 <code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">hex_corner</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">size</em>, <em class="sig-param">i</em>, <em class="sig-param">flat=True</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.hex_corner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the ith vertex of a regular hex with center of size i and flat/pointy orientation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="hexagon_utilities.point_to_line_dist">
+<code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">point_to_line_dist</code><span class="sig-paren">(</span><em class="sig-param">pt</em>, <em class="sig-param">line_seg_endpoint1</em>, <em class="sig-param">line_seg_endpoint2</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.point_to_line_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the distance between a point and a line segment.</p>
+<p>To calculate the closest distance to a line segment, we first need to check
+if the point projects onto the line segment.  If it does, then we calculate
+the orthogonal distance from the point to the line.
+If the point does not project to the line segment, we calculate the
+distance to both endpoints and take the shortest distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>numpy.core.multiarray.ndarray</em>) – Numpy array of form [x,y], describing the point.</p></li>
+<li><p><strong>line</strong> (<em>list of numpy.core.multiarray.ndarray</em>) – list of endpoint arrays of form [P1, P2]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The minimum distance to a point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

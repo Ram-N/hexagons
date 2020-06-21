@@ -14,6 +14,7 @@ Welcome to Hexagons's documentation!
    documentation_jupyter
    example_voronoi
 
+   hexagons_glossary
 
 Indices and tables
 ==================
