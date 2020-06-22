@@ -147,6 +147,33 @@ class Hex:
         self.verts = verts
         return self.verts
 
+    def get_lattice_points(self, density=2):
+
+        lat = {}
+        lat["c"] = self.center
+        lat["v"] = self.get_verts()  # 6
+
+        # TODO if density == 1
+
+        if density == 2:
+            etp = self.point(pt_name="edge", action="trisect")  # 12 points
+            stp = self.point(pt_name="spoke", action="trisect")  # 12 points
+            # for flat hexagons only...caution
+            atp = self.point(
+                pt_name="apo", dist=2 / 3 * self.h / 2 / self.size
+            )  # 6 points
+
+            # adding a 7th point to avoid ugly (v+1)%6 type operations
+            # add the entire list again?
+            lat["ea"] = etp[:6] + [etp[0]]
+            lat["eb"] = etp[6:] + [etp[6]]
+            lat["sa"] = stp[:6] + [stp[0]]
+            lat["sb"] = stp[6:] + [stp[6]]
+            lat["ab"] = atp + [atp[0]]  # the second point b along the aptothem
+
+        self.lat = lat
+        return lat
+
     def get_points_on_edge(self, edge=None, dist_frac=None):
         """
         Given a Edgenum [0-5] return a point(x,y) distance from vert away on the edge     
@@ -666,14 +693,47 @@ class Hex:
             **kwargs,
         )
 
+    def render_line(self, pts, close=False, ax=None, **kwargs):
+        """ Connects all specified pts (xy) by drawing lines between them, sequentially 
+        
+         Parameters
+        ----------
+        
+        pts: List-like set of xy tuples
+            [(x0,y0), (x1,y1), (x2,y2),...]
+
+        close: Boolean, optional
+            A flag to specify if the last point should be connected to the first one via a line. Default 
+            is False.
+
+        """
+
+        if ax is None:
+            ax = plt.gca()
+        x_arr, y_arr = [], []
+        for x, y in pts:
+            x_arr.append(x)
+            y_arr.append(y)
+
+        if close:  # connect pt0 with pt_N
+            x_arr.append(pts[0][0])
+            y_arr.append(pts[0][1])
+
+        edge = Line2D([x_arr], [y_arr], **kwargs)
+        ax.add_line(edge)
+        return (ax,)
+
     def plot_points(self, pts, **kwargs):
         """ Draws all the pts (xy) specified """
 
         if not "color" in kwargs:
             kwargs["color"] = "k"
 
-        for p in pts:
-            plt.scatter(*p, s=50, **kwargs)
+        try:
+            for p in pts:
+                plt.scatter(*p, s=50, **kwargs)
+        except:  # single point, just plot it without looping
+            plt.scatter(*pts, s=50, **kwargs)
 
     def decorate(self, poly=None, line=None, include_center=True, ax=None, **kwargs):
         """ Draw a Polygon to connect specific vertices and optionally center
@@ -760,9 +820,9 @@ class Hex:
             inradius = self.h / 2 if self.flat else self.w / 2
 
             if pt_name in ["spoke", "spokes"]:
-                theta_offset = 0
+                theta_offset = 60
             else:  # apothem
-                theta_offset = 90
+                theta_offset = 30
 
             if action == "bisect":
                 if pt_name in ["spoke", "spokes"]:

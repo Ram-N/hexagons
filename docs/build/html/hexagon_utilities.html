@@ -91,6 +91,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_jupyter.html">Documentation in Jupyter Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_voronoi.html">Example: Voronoi Hexagonal Tiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hexagons_references.html">Hexagon References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hexagons_glossary.html">Glossary Hexagons</a></li>
 </ul>
 
@@ -194,6 +195,11 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="hexagon_utilities.Hex.get_lattice_points">
+<code class="sig-name descname">get_lattice_points</code><span class="sig-paren">(</span><em class="sig-param">density=2</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_lattice_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="hexagon_utilities.Hex.get_points_center_rtheta">
 <code class="sig-name descname">get_points_center_rtheta</code><span class="sig-paren">(</span><em class="sig-param">dist</em>, <em class="sig-param">theta_offset</em>, <em class="sig-param">index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_points_center_rtheta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return 6 points that are dist-and angle theta away from the hex center</p>
@@ -201,7 +207,7 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
-<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>in-radius</cite> of the hexagon.</p></li>
+<cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>size</cite> of the hexagon.</p></li>
 <li><p><strong>theta-offset</strong> (<em>float or int</em>) – Angle (in degrees). Note that the angle is w.r.t to the center. It is not absolute.</p></li>
 <li><p><strong>index</strong> (<em>None or integer</em>) – index specifies which spoke or apothem to use for theta offset.
 If index is None, then all 6 are returned</p></li>
@@ -315,6 +321,12 @@ If index is None, then all 6 are returned</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="hexagon_utilities.Hex.plot_points">
+<code class="sig-name descname">plot_points</code><span class="sig-paren">(</span><em class="sig-param">pts</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.plot_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws all the pts (xy) specified</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="hexagon_utilities.Hex.point">
 <code class="sig-name descname">point</code><span class="sig-paren">(</span><em class="sig-param">pt_name</em>, <em class="sig-param">action=None</em>, <em class="sig-param">index=None</em>, <em class="sig-param">dist=None</em>, <em class="sig-param">theta=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return one or six points in the hexagon based on specifications.</p>
@@ -322,7 +334,7 @@ If index is None, then all 6 are returned</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pt-name</strong> (<em>string</em>) – Name of the point type desired: Allowable values are <cite>center</cite>, <cite>vertex</cite>, <cite>vertices</cite>,
-<cite>spokes</cite>, <cite>edge(s)</cite>, <cite>apothem</cite></p></li>
+<cite>spokes</cite>, <cite>edge(s)</cite>, <cite>apo|them</cite></p></li>
 <li><p><strong>dist</strong> (<em>float</em>) – distance from the hexagon center, in hexagon-size units. Note: This is not absolute distance. Typically
 <cite>dist</cite> goes from 0 to 1, and gets multiplied by the <cite>in-radius</cite> of the hexagon.</p></li>
 <li><p><strong>theta</strong> (<em>float or int</em>) – Angle (in degrees).</p></li>
@@ -394,6 +406,22 @@ Default is True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>incircle</strong> (<em>Boolean, optional</em>) – If True, indicates that the incircle should be rendered. If False, indicates that the circumcircle should be rendered. Default is True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.render_line">
+<code class="sig-name descname">render_line</code><span class="sig-paren">(</span><em class="sig-param">pts</em>, <em class="sig-param">close=False</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects all specified pts (xy) by drawing lines between them, sequentially</p>
+<blockquote>
+<div><p>Parameters</p>
+</div></blockquote>
+<dl class="simple">
+<dt>pts: List-like set of xy tuples</dt><dd><p>[(x0,y0), (x1,y1), (x2,y2),…]</p>
+</dd>
+<dt>close: Boolean, optional</dt><dd><p>A flag to specify if the last point should be connected to the first one via a line. Default
+is False.</p>
 </dd>
 </dl>
 </dd></dl>
