@@ -85,15 +85,12 @@ def get_pt_rtheta_away(pt, dist, theta):
     return (x, y)
 
 
-# deprecated. Remove?
-class Point:
-    def __init__(self, x, y):
-        """Defines x and y coordinates"""
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return "Point(%s,%s)" % (self.x, self.y)
+SPOKE_MIRROR_X = [0, 5, 4, 3, 2, 1]
+SPOKE_MIRROR_Y = [4, 3, 2, 1, 0, 5]
+SPOKE_MIRROR_Z = [2, 1, 0, 5, 4, 3]
+APO_MIRROR_X = [5, 4, 3, 2, 1, 0]
+APO_MIRROR_Y = [3, 2, 1, 0, 5, 4]
+APO_MIRROR_Z = [1, 0, 5, 4, 3, 2]
 
 
 class Hex:
@@ -119,16 +116,17 @@ class Hex:
         self.size = size
         self.flat = flat
         self.verts = None
+        self.lattice = None  # will be computed only when get_lattice_points is invoked
 
         # Cube coordinates
         self.xc, self.yc, self.zc = (None, None, None)
 
         if self.flat:
-            self.h = sqrt(3) * size
+            self.ht = sqrt(3) * size
             self.w = 2 * size
         else:
             self.w = sqrt(3) * size
-            self.h = 2 * size
+            self.ht = 2 * size
 
         self.cube = cube  # cube coords of this particular hex
         self.row = None
@@ -148,6 +146,23 @@ class Hex:
         return self.verts
 
     def get_lattice_points(self, density=2):
+        """
+            This method serves two purposes. It will store the interior 'lattice' points of a hexagon in a 
+            dictionary called `lattice` which can then be used. It also returns the 
+            dictionary, for plotting purposes.
+
+        Parameters
+        ----------
+        
+        density, optional
+            Currently only 2 has been implemented.
+
+        Returns
+        -------
+        Dictionary
+            A dictionary of lattice points, with keys = ['ab', 'ea', 'eb','sa', 'sb',]
+
+        """
 
         lat = {}
         lat["c"] = self.center
@@ -160,7 +175,7 @@ class Hex:
             stp = self.point(pt_name="spoke", action="trisect")  # 12 points
             # for flat hexagons only...caution
             atp = self.point(
-                pt_name="apo", dist=2 / 3 * self.h / 2 / self.size
+                pt_name="apo", dist=2 / 3 * self.ht / 2 / self.size
             )  # 6 points
 
             # adding a 7th point to avoid ugly (v+1)%6 type operations
@@ -171,8 +186,79 @@ class Hex:
             lat["sb"] = stp[6:] + [stp[6]]
             lat["ab"] = atp + [atp[0]]  # the second point b along the aptothem
 
-        self.lat = lat
+        self.lattice = lat
         return lat
+
+    def get_symmetrical_points(self, lattice_tup, axis="6"):
+        """ 
+        Given a lattice point inside a hexagon, returns symmetrical point(s) per axis specified.
+
+        Given one point on the lattice, this method will return all 6 of its 
+        reflected siblings, or, if an `axi` is specified, will return that 
+        particular mirror reflected point. Note that this is MIRROR reflection, 
+        not rotational symmetry. Use axi = '6' for rotational symmetry.
+
+        Parameters
+        ----------
+
+        lattice_tup: tuple
+            This tuple is made up of a `pt_name` and an `index` specifying the lattice point uniquely.
+            pt_name: string. A special name to denote specific lattice points. Allowable values are:
+            ['sa', 'sb', 'ea', 'eb', 'ab']
+            
+            index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are 
+            integers from 0..5
+
+        Returns
+        -------
+        Tuple
+            an (x, y) tuple of the symmetrical point, or 6 points in [(x1,y1), (x2,y2) ...] format
+
+        Examples
+        --------
+        >>> h = Hex(0, 0, size=1)
+        >>> h.get_lattice_points()
+        >>> symp = h.get_symmetrical_points(("ab", 4), "z")
+
+        """
+
+        axis = axis.lower()
+        if axis not in ["x", "y", "z", "6"]:
+            raise Error(f"faulty axis specified for reflection")
+
+        pt_name, pindex = lattice_tup  # name and index
+
+        if self.lattice is None:
+            self.get_lattice_points()
+
+        if axis == "6" or None:
+            return self.lattice[pt_name]
+        if axis == "x":
+            if pt_name in ["sa", "sb"]:
+                mirror = SPOKE_MIRROR_X
+            elif pt_name in ["aa", "ab", "ea", "eb"]:
+                mirror = APO_MIRROR_X
+        elif axis == "y":
+            if pt_name in ["sa", "sb"]:
+                mirror = SPOKE_MIRROR_Y
+            elif pt_name in ["aa", "ab", "ea", "eb"]:
+                mirror = APO_MIRROR_Y
+        elif axis == "z":
+            if pt_name in ["sa", "sb"]:
+                mirror = SPOKE_MIRROR_Z
+            elif pt_name in ["aa", "ab", "ea", "eb"]:
+                mirror = APO_MIRROR_Z
+
+        # For points on the edge, distance from vertex comes into play.
+        # Adjusting for that...
+        if pt_name == "ea":
+            ref_name = "eb"
+        elif pt_name == "eb":
+            ref_name = "ea"
+        else:
+            ref_name = pt_name
+
+        return self.lattice[ref_name][mirror[pindex]]
 
     def get_points_on_edge(self, edge=None, dist_frac=None):
         """
@@ -355,7 +441,7 @@ class Hex:
         
             
         """
-        inradius = self.h / 2 if self.flat else self.w / 2
+        inradius = self.ht / 2 if self.flat else self.w / 2
         dist = (
             dist_frac * inradius
         )  # convert fractional distance to hexagonal size units
@@ -453,7 +539,20 @@ class Hex:
         return (ax,)
 
     def v_connect(self, v_pairs, ax=None, **kwargs):
-        """ Draws edges from specific vertices to specified vertices..."""
+        """ Draws edges from specific vertices to specified vertices.
+        
+        Parameters
+        ----------
+        v_pairs: List of tuples of integers
+            [vi, vj] where vi and vj are in [0..5] or [(vi0, vj0), (vi1, vj1) ... ]
+
+        Returns
+        -------
+        None
+            One or more Line2D lines connecting pairs of hexagon vertices
+
+        
+        """
 
         if ax is None:
             ax = plt.gca()
@@ -461,12 +560,20 @@ class Hex:
         if self.verts is None:
             self.verts = self.get_verts()
 
+        # if just one set of verts are to be connected [1,3] or [[1,3]] are both acceptable.
+        # Accounting for that
+        if isinstance(v_pairs[0], int):
+            v_pairs = [v_pairs]
+
         # for each vp in v_pairs, connect vi to vj by drawing a Line2D
         for i, j in v_pairs:
             # print(i, j)
             # plot this line for this hexagon
-            x_arr = [self.verts[i].x, self.verts[j].x]
-            y_arr = [self.verts[i].y, self.verts[j].y]
+            if not (i in range(6)) and (j in range(6)):
+                raise ValueError(f"invalid vertex value specified {(i,j)}")
+
+            x_arr = [self.verts[i][0], self.verts[j][0]]
+            y_arr = [self.verts[i][1], self.verts[j][1]]
             edge = Line2D([x_arr], [y_arr], **kwargs)
             ax.add_line(edge)
         return (ax,)
@@ -532,7 +639,7 @@ class Hex:
         if ax is None:
             ax = plt.gca()
 
-        inradius = self.h / 2 if self.flat else self.w / 2
+        inradius = self.ht / 2 if self.flat else self.w / 2
         pts = self.get_points_center_rtheta(inradius, 120)
         if index in range(6):
             xp, yp = pts[index]
@@ -644,7 +751,7 @@ class Hex:
             ax = plt.gca()
 
         if incircle:
-            radius = self.h / 2 if self.flat else self.w / 2
+            radius = self.ht / 2 if self.flat else self.w / 2
         else:
             radius = self.size
 
@@ -668,7 +775,7 @@ class Hex:
             ax = plt.gca()
 
         if incircle:
-            radius = self.h if self.flat else self.w
+            radius = self.ht if self.flat else self.w
         else:
             radius = self.size * 2
 
@@ -694,9 +801,10 @@ class Hex:
         )
 
     def render_line(self, pts, close=False, ax=None, **kwargs):
-        """ Connects all specified pts (xy) by drawing lines between them, sequentially 
+        """ 
+        Connects all specified pts (xy) by drawing lines between them, sequentially 
         
-         Parameters
+        Parameters
         ----------
         
         pts: List-like set of xy tuples
@@ -722,6 +830,43 @@ class Hex:
         edge = Line2D([x_arr], [y_arr], **kwargs)
         ax.add_line(edge)
         return (ax,)
+
+    def draw_axis(self, orient="x", **kwargs):
+        """ Draw a line from one vertex to its opposite vertex, of speicified orientation
+        
+        Parameters
+        ----------
+        orient: str, optional
+            Valid values are "x", "y", or "z." Default is "x"
+        """
+
+        if orient in ["x", "X"]:
+            if not self.flat:
+                self.v_connect([1, 4], **kwargs)
+            else:
+                self.v_connect([0, 3], **kwargs)
+        if orient in ["y", "Y"]:
+            if not self.flat:
+                self.v_connect([0, 3], **kwargs)
+            else:
+                self.v_connect([2, 5], **kwargs)
+        if orient in ["z", "Z"]:
+            if not self.flat:
+                self.v_connect([2, 5], **kwargs)
+            else:
+                self.v_connect([1, 4], **kwargs)
+
+    def draw_xaxis(self, **kwargs):
+        """ Draw x-axis for a given hexagon """
+        self.draw_axis(orient="x", **kwargs)
+
+    def draw_yaxis(self, **kwargs):
+        """ Draw y-axis for a given hexagon """
+        self.draw_axis(orient="y", **kwargs)
+
+    def draw_zaxis(self, **kwargs):
+        """ Draw z-axis for a given hexagon """
+        self.draw_axis(orient="z", **kwargs)
 
     def plot_points(self, pts, **kwargs):
         """ Draws all the pts (xy) specified """
@@ -817,7 +962,7 @@ class Hex:
                 return self.get_points_on_edge(edge=index, dist_frac=dist)
 
         if pt_name in ["spoke", "spokes", "apothem", "apo"]:
-            inradius = self.h / 2 if self.flat else self.w / 2
+            inradius = self.ht / 2 if self.flat else self.w / 2
 
             if pt_name in ["spoke", "spokes"]:
                 theta_offset = 60
@@ -849,7 +994,7 @@ class Hex:
                 if pt_name in ["spoke", "spokes"]:
                     dist = self.size * np.random.random()
                 else:  # apothem
-                    inradius = self.h / 2 if self.flat else self.w / 2
+                    inradius = self.ht / 2 if self.flat else self.w / 2
                     dist = inradius * np.random.random()
 
             return self.get_points_center_rtheta(dist, theta_offset, index)

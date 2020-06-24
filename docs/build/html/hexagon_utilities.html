@@ -189,6 +189,35 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="hexagon_utilities.Hex.draw_axis">
+<code class="sig-name descname">draw_axis</code><span class="sig-paren">(</span><em class="sig-param">orient='x'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a line from one vertex to its opposite vertex, of speicified orientation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>orient</strong> (<em>str, optional</em>) – Valid values are “x”, “y”, or “z.” Default is “x”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.draw_xaxis">
+<code class="sig-name descname">draw_xaxis</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_xaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw x-axis for a given hexagon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.draw_yaxis">
+<code class="sig-name descname">draw_yaxis</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_yaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw y-axis for a given hexagon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.draw_zaxis">
+<code class="sig-name descname">draw_zaxis</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_zaxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw z-axis for a given hexagon</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="hexagon_utilities.Hex.get_edge_midpoints">
 <code class="sig-name descname">get_edge_midpoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_edge_midpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns 6 points that are in the middle of each of the 6 Edges</p>
@@ -197,7 +226,23 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 <dl class="method">
 <dt id="hexagon_utilities.Hex.get_lattice_points">
 <code class="sig-name descname">get_lattice_points</code><span class="sig-paren">(</span><em class="sig-param">density=2</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_lattice_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div><p>This method serves two purposes. It will store the interior ‘lattice’ points of a hexagon in a
+dictionary called <cite>lattice</cite> which can then be used. It also returns the
+dictionary, for plotting purposes.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>density, optional</strong> – Currently only 2 has been implemented.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of lattice points, with keys = [‘ab’, ‘ea’, ‘eb’,’sa’, ‘sb’,]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="hexagon_utilities.Hex.get_points_center_rtheta">
@@ -285,6 +330,37 @@ If index is None, then 6 points are returned</p></li>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hexagon_utilities.Hex.get_symmetrical_points">
+<code class="sig-name descname">get_symmetrical_points</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup</em>, <em class="sig-param">axis='6'</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_symmetrical_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a lattice point inside a hexagon, returns symmetrical point(s) per axis specified.</p>
+<p>Given one point on the lattice, this method will return all 6 of its
+reflected siblings, or, if an <cite>axi</cite> is specified, will return that
+particular mirror reflected point. Note that this is MIRROR reflection,
+not rotational symmetry. Use axi = ‘6’ for rotational symmetry.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lattice_tup</strong> (<em>tuple</em>) – This tuple is made up of a <cite>pt_name</cite> and an <cite>index</cite> specifying the lattice point uniquely.
+pt_name: string. A special name to denote specific lattice points. Allowable values are:
+[‘sa’, ‘sb’, ‘ea’, ‘eb’, ‘ab’]</p>
+<p>index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are
+integers from 0..5</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an (x, y) tuple of the symmetrical point, or 6 points in [(x1,y1), (x2,y2) …] format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">Hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span><span class="o">.</span><span class="n">get_lattice_points</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">symp</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">get_symmetrical_points</span><span class="p">((</span><span class="s2">&quot;ab&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="s2">&quot;z&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -414,14 +490,13 @@ Default is True.</p>
 <dt id="hexagon_utilities.Hex.render_line">
 <code class="sig-name descname">render_line</code><span class="sig-paren">(</span><em class="sig-param">pts</em>, <em class="sig-param">close=False</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connects all specified pts (xy) by drawing lines between them, sequentially</p>
-<blockquote>
-<div><p>Parameters</p>
-</div></blockquote>
-<dl class="simple">
-<dt>pts: List-like set of xy tuples</dt><dd><p>[(x0,y0), (x1,y1), (x2,y2),…]</p>
-</dd>
-<dt>close: Boolean, optional</dt><dd><p>A flag to specify if the last point should be connected to the first one via a line. Default
-is False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pts</strong> (<em>List-like set of xy tuples</em>) – [(x0,y0), (x1,y1), (x2,y2),…]</p></li>
+<li><p><strong>close</strong> (<em>Boolean, optional</em>) – A flag to specify if the last point should be connected to the first one via a line. Default
+is False.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -485,7 +560,18 @@ If index is None, then all 6 spokes are drawn</p>
 <dl class="method">
 <dt id="hexagon_utilities.Hex.v_connect">
 <code class="sig-name descname">v_connect</code><span class="sig-paren">(</span><em class="sig-param">v_pairs</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.v_connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draws edges from specific vertices to specified vertices…</p>
+<dd><p>Draws edges from specific vertices to specified vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v_pairs</strong> (<em>List of tuples of integers</em>) – [vi, vj] where vi and vj are in [0..5] or [(vi0, vj0), (vi1, vj1) … ]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>One or more Line2D lines connecting pairs of hexagon vertices</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -526,12 +612,6 @@ And there is a rectangle (a bounding box) for the grid, since it has to be rende
 <code class="sig-name descname">render_grid_vertices</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.HexGrid.render_grid_vertices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="hexagon_utilities.Point">
-<em class="property">class </em><code class="sig-prename descclassname">hexagon_utilities.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="function">
