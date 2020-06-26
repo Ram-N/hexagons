@@ -200,6 +200,43 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="hexagon_utilities.Hex.draw_symmetrical_lines">
+<code class="sig-name descname">draw_symmetrical_lines</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup</em>, <em class="sig-param">axis</em>, <em class="sig-param">color_scheme={}</em>, <em class="sig-param">close=False</em>, <em class="sig-param">connect_original_points=True</em>, <em class="sig-param">draw_axis=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_symmetrical_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw pairs of lines connecting the given points across the specified axis.</p>
+<p>By default, it will draw the line connecting the original set of points as well.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>lattice_tup</strong> (<em>tuple</em>) – This tuple is made up of a <cite>pt_name</cite> and an <cite>index</cite> specifying the lattice point uniquely.
+pt_name: string. A special name to denote specific lattice points. Allowable values are:
+[‘sa’, ‘sb’, ‘ea’, ‘eb’, ‘ab’]</p>
+<p>index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are
+integers from 0..5</p>
+</li>
+<li><p><strong>axis</strong> (<em>string, optional</em>) – The Axis of reflective symmetry. Should be one of ‘x’, ‘y’, ‘z’, or ‘6’.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>color_scheme: Dict, optional</dt><dd><p>Specifies which colors to use for the original and reflected lines. Keys can only ‘x’, ‘y’, ‘z’ or ‘6’
+The value of the dictionary should be a List of color names. It should be 1, 2, or 6 colors for 6-fold
+symmetry. If only one color is specified, then all lines will be drawn with that color.</p>
+</dd>
+<dt>close: Boolean, optional</dt><dd><p>A flag to specify if the last point should be connected to the first one via a line. Default
+is False.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>One or more spokes are drawn as Line2D lines.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="hexagon_utilities.Hex.draw_xaxis">
 <code class="sig-name descname">draw_xaxis</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_xaxis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw x-axis for a given hexagon</p>
@@ -333,8 +370,8 @@ If index is None, then 6 points are returned</p></li>
 </dd></dl>
 
 <dl class="method">
-<dt id="hexagon_utilities.Hex.get_symmetrical_points">
-<code class="sig-name descname">get_symmetrical_points</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup</em>, <em class="sig-param">axis='6'</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_symmetrical_points" title="Permalink to this definition">¶</a></dt>
+<dt id="hexagon_utilities.Hex.get_symmetrical_point">
+<code class="sig-name descname">get_symmetrical_point</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup</em>, <em class="sig-param">axis='6'</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.get_symmetrical_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a lattice point inside a hexagon, returns symmetrical point(s) per axis specified.</p>
 <p>Given one point on the lattice, this method will return all 6 of its
 reflected siblings, or, if an <cite>axi</cite> is specified, will return that
@@ -342,11 +379,15 @@ particular mirror reflected point. Note that this is MIRROR reflection,
 not rotational symmetry. Use axi = ‘6’ for rotational symmetry.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>lattice_tup</strong> (<em>tuple</em>) – This tuple is made up of a <cite>pt_name</cite> and an <cite>index</cite> specifying the lattice point uniquely.
+<dd class="field-odd"><ul>
+<li><p><strong>lattice_tup</strong> (<em>tuple</em>) – This tuple is made up of a <cite>pt_name</cite> and an <cite>index</cite> specifying the lattice point uniquely.
 pt_name: string. A special name to denote specific lattice points. Allowable values are:
 [‘sa’, ‘sb’, ‘ea’, ‘eb’, ‘ab’]</p>
 <p>index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are
 integers from 0..5</p>
+</li>
+<li><p><strong>axis</strong> (<em>string, optional</em>) – The Axis of reflective symmetry. Should be one of ‘x’, ‘y’, ‘z’, or ‘6’.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>an (x, y) tuple of the symmetrical point, or 6 points in [(x1,y1), (x2,y2) …] format</p>
