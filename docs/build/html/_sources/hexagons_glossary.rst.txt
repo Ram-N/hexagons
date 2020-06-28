@@ -41,6 +41,10 @@ Glossary Hexagons
         the place where two edges are meeting at a vertex.
         A hexagon can either be Pointy-topped or :term:`Flat`.
 
+    Segment
+        A segment is a one-sixth triangle of the hexagon. It has 2 spokes and one :term:`Edge`, from the center. I.e. each regular
+        hexagon is made up for 6 segments.
+
     Size
         The size of a regular hexagon is the length of one :term:`Edge`. Sometimes this is also referred to as 
         the radius of the hexagon. See also :term:`Inradius`.
@@ -52,13 +56,16 @@ Glossary Hexagons
        to be written     
        
     x-axis
-       to be written     
+       One of the three axes of a regular hexagonal grid. For flat hexagons, it goes from the West to East, 
+       horizontally.
        
     y-axis
-       to be written     
+       One of the three axes of a regular hexagonal grid. For flat hexagons, it goes from the NorthWest 
+       down to the Southeast.
        
     z-axis
-       to be written     
+       One of the three axes of a regular hexagonal grid. For flat hexagons, it goes from the NorthEast down 
+       to the Southwest direction.     
 
     xat
         abbreviated form of an Xattitude, which are simply lines parallel to the 

@@ -204,13 +204,13 @@ class Hex:
         lattice_tup: tuple
             This tuple is made up of a `pt_name` and an `index` specifying the lattice point uniquely.
             pt_name: string. A special name to denote specific lattice points. Allowable values are:
-            ['sa', 'sb', 'ea', 'eb', 'ab']
+            ['ab', 'ea', 'eb', 'sa', 'sb', 'v']
             
             index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are 
             integers from 0..5
 
         axis: string, optional
-            The Axis of reflective symmetry. Should be one of 'x', 'y', 'z', or '6'.
+            The axis of reflective symmetry. Should be one of 'x', 'y', 'z', or '6'.
 
         Returns
         -------
@@ -237,17 +237,19 @@ class Hex:
         if axis == "6" or None:
             return self.lattice[pt_name]
         if axis == "x":
-            if pt_name in ["sa", "sb"]:
+            if pt_name in ["sa", "sb", "v"]:
                 mirror = SPOKE_MIRROR_X
             elif pt_name in ["aa", "ab", "ea", "eb"]:
                 mirror = APO_MIRROR_X
+
         elif axis == "y":
-            if pt_name in ["sa", "sb"]:
+            if pt_name in ["sa", "sb", "v"]:
                 mirror = SPOKE_MIRROR_Y
             elif pt_name in ["aa", "ab", "ea", "eb"]:
                 mirror = APO_MIRROR_Y
+
         elif axis == "z":
-            if pt_name in ["sa", "sb"]:
+            if pt_name in ["sa", "sb", "v"]:
                 mirror = SPOKE_MIRROR_Z
             elif pt_name in ["aa", "ab", "ea", "eb"]:
                 mirror = APO_MIRROR_Z
@@ -886,7 +888,135 @@ class Hex:
         except:  # single point, just plot it without looping
             plt.scatter(*pts, s=50, **kwargs)
 
-    def draw_symmetrical_lines(
+    def draw_symmetrical_shapes(
+        self,
+        lattice_tup,
+        axis,
+        shape=["line"],
+        ax=None,
+        color_scheme={},
+        close=False,
+        connect_original_points=True,
+        draw_axis=False,
+        **kwargs,
+    ):
+        """
+        Draw pairs of lines connecting the given points across the specified axis. 
+        
+        By default, it will draw the line connecting the original set of points as well. 
+        
+        Parameters
+        ------------
+        
+        lattice_tup: tuple
+            This tuple is made up of a `pt_name` and an `index` specifying the lattice point uniquely.
+            pt_name: string. A special name to denote specific lattice points. Allowable values are:
+            ['sa', 'sb', 'ea', 'eb', 'ab']
+            
+            index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are 
+            integers from 0..5
+
+        axis: string, optional
+            The Axis of reflective symmetry. Should be one of 'x', 'y', 'z', or '6'.
+
+
+        color_scheme: Dict, optional
+            Specifies which colors to use for the original and reflected lines. Keys can only 'x', 'y', 'z' or '6'
+            The value of the dictionary should be a List of color names. It should be 1, 2, or 6 colors for 6-fold
+            symmetry. If only one color is specified, then all lines will be drawn with that color.
+            
+        close: Boolean, optional
+            A flag to specify if the last point should be connected to the first one via a line. Default 
+            is False.
+
+        Returns
+        -------
+        None
+            One or more spokes are drawn as Line2D lines.
+        
+        """
+        axis = axis.lower()
+        if axis not in ["x", "y", "z", "6"]:
+            raise ValueError(f"faulty axis specified for reflection")
+
+        if self.lattice is None:
+            self.get_lattice_points()
+
+        if ax is None:
+            ax = plt.gca()
+
+        if close:
+            lattice_tup.append(lattice_tup[0])
+
+        pts = [self.lattice[_name][i] for _name, i in lattice_tup]
+        pt_indices = [i for _name, i in lattice_tup]
+
+        sympts = []
+        for ptup in lattice_tup:
+            sympt = self.get_symmetrical_point(ptup, axis)
+            sympts.append(sympt)
+
+        if axis == "6":
+            # requires delicated ops. Take the sets 2 at a time, and for every pair, connect them
+            for petal in range(6):  # we will draw 6 symmetrical segments...
+                if axis in color_scheme:
+                    if len(color_scheme[axis]) >= 6:
+                        kwargs["color"] = color_scheme[axis][petal]
+                    else:  # just use the first color alone
+                        kwargs["color"] = color_scheme[axis][0]
+
+                pverts = []  # start building the irregular polygon
+                start_idx = petal
+                for spt in range(0, len(sympts) - 1):
+                    # offset is the difference between every 2 adjacent indices of the hex segments
+                    offset = pt_indices[spt + 1] - pt_indices[spt]
+                    # print(f'petal {petal} spt{spt} offset {offset}')
+                    # print(f'connecting line from index {start_idx} to index {(start_idx+offset)%6}')
+                    if "line" in shape or shape == "line":
+                        self.render_line(
+                            [
+                                sympts[spt][start_idx],
+                                sympts[spt + 1][(start_idx + offset) % 6],
+                            ],
+                            close=close,
+                            **kwargs,
+                        )
+                    if "poly" in shape or shape == "poly":
+                        pverts.append(sympts[spt][start_idx])
+
+                    # mark the place in the current petal being drawn
+                    start_idx = (start_idx + offset) % 6
+
+                if "poly" in shape or shape == "poly":
+                    poly = Polygon(pverts, **kwargs)
+                    ax.add_patch(poly)
+
+        else:  # for x y or z reflections
+
+            # Draw the original Line(s)
+            if axis in color_scheme:
+                kwargs["color"] = color_scheme[axis][0]
+            self.render_line(pts, close=close, **kwargs)
+            if "poly" in shape or shape == "poly":
+                poly = Polygon(pts, **kwargs)
+                ax.add_patch(poly)
+
+            # Draw the reflected Line(s)
+            if (
+                axis in color_scheme and len(color_scheme[axis]) > 1
+            ):  # there is a second color
+                kwargs["color"] = color_scheme[axis][1]
+            self.render_line(sympts, close=close, **kwargs)
+            if "poly" in shape or shape == "poly":
+                poly = Polygon(sympts, **kwargs)
+                ax.add_patch(poly)
+
+        # self.plot_points(pts)# close=False, color='r', **kwargs)
+        if draw_axis:
+            self.draw_axis(axis, **kwargs)
+
+    # delete this
+    def _draw_symmetrical_lines(
         self,
         lattice_tup,
         axis,

@@ -200,8 +200,8 @@ It usually is, but doesn’t have to be inside the hexagon</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="hexagon_utilities.Hex.draw_symmetrical_lines">
-<code class="sig-name descname">draw_symmetrical_lines</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup</em>, <em class="sig-param">axis</em>, <em class="sig-param">color_scheme={}</em>, <em class="sig-param">close=False</em>, <em class="sig-param">connect_original_points=True</em>, <em class="sig-param">draw_axis=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_symmetrical_lines" title="Permalink to this definition">¶</a></dt>
+<dt id="hexagon_utilities.Hex.draw_symmetrical_shapes">
+<code class="sig-name descname">draw_symmetrical_shapes</code><span class="sig-paren">(</span><em class="sig-param">lattice_tup, axis, shape=['line'], ax=None, color_scheme={}, close=False, connect_original_points=True, draw_axis=False, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.draw_symmetrical_shapes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw pairs of lines connecting the given points across the specified axis.</p>
 <p>By default, it will draw the line connecting the original set of points as well.</p>
 <dl class="field-list">
@@ -382,11 +382,11 @@ not rotational symmetry. Use axi = ‘6’ for rotational symmetry.</p>
 <dd class="field-odd"><ul>
 <li><p><strong>lattice_tup</strong> (<em>tuple</em>) – This tuple is made up of a <cite>pt_name</cite> and an <cite>index</cite> specifying the lattice point uniquely.
 pt_name: string. A special name to denote specific lattice points. Allowable values are:
-[‘sa’, ‘sb’, ‘ea’, ‘eb’, ‘ab’]</p>
+[‘ab’, ‘ea’, ‘eb’, ‘sa’, ‘sb’, ‘v’]</p>
 <p>index: integer  index specifies which spoke or apothem to use for theta offset. Valid values are
 integers from 0..5</p>
 </li>
-<li><p><strong>axis</strong> (<em>string, optional</em>) – The Axis of reflective symmetry. Should be one of ‘x’, ‘y’, ‘z’, or ‘6’.</p></li>
+<li><p><strong>axis</strong> (<em>string, optional</em>) – The axis of reflective symmetry. Should be one of ‘x’, ‘y’, ‘z’, or ‘6’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
