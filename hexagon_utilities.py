@@ -812,7 +812,7 @@ class Hex:
         Parameters
         ----------
         
-        pts: List-like set of xy tuples
+        pts: List of xy tuples
             [(x0,y0), (x1,y1), (x2,y2),...]
 
         close: Boolean, optional
@@ -823,6 +823,9 @@ class Hex:
 
         if ax is None:
             ax = plt.gca()
+
+        if isinstance(pts, tuple):
+            raise TypeError("pts should not be a tuple. Try sending in a list instead.")
 
         if close:  # connect pt0 with pt_N
             pts.append(pts[0])
@@ -973,6 +976,7 @@ class Hex:
                     # print(f'petal {petal} spt{spt} offset {offset}')
                     # print(f'connecting line from index {start_idx} to index {(start_idx+offset)%6}')
                     if "line" in shape or shape == "line":
+                        # this could be improved and made faster. TODO
                         self.render_line(
                             [
                                 sympts[spt][start_idx],

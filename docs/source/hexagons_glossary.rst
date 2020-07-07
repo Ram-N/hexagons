@@ -50,10 +50,10 @@ Glossary Hexagons
         the radius of the hexagon. See also :term:`Inradius`.
 
     Spoke
-       to be written     
-       
+        A spoke is a straight line connecting a :term:`Vertex` of the polygon to its center. Analogous to the radius of a circle.
+
     Vertex
-       to be written     
+        A point at which two polygon edges of a polygon meet. It is where two :term:'Edge's meet.
        
     x-axis
        One of the three axes of a regular hexagonal grid. For flat hexagons, it goes from the West to East, 
