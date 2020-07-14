@@ -76,7 +76,7 @@ def grid_8(bg_color=None):
     if bg_color:
         fig.patch.set_facecolor(bg_color)
     plt.axis("scaled")
-    ax.set_ybound(lower=-4, upper=2)
+    ax.set_ybound(lower=-3.4, upper=2.6)
     ax.set_xbound(lower=-5, upper=5)
     plt.axis("off")
     size = 1
@@ -123,7 +123,9 @@ def save_file(
         if details is not None:
             fn += details
 
-        dtstr = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%p")
+        dtstr = datetime.utcnow().strftime(
+            "%Y-%m-%d_%H-%M-%S_%f_%p"
+        )  # added microseconds
 
         # https://stackoverflow.com/questions/4804005/matplotlib-figure-facecolor-background-color
         # if you want the background color saved... you must get_facecolor()
@@ -132,6 +134,7 @@ def save_file(
             facecolor=fig.get_facecolor(),
             edgecolor="none",
         )
+        print(f"writing {fn+dtstr}.jpg")
 
         logging.info(f"Saved to ../images/temp/{fn+dtstr}.jpg")
 

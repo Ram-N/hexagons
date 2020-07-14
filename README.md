@@ -24,7 +24,7 @@ There are over two dozen Example Jupyter notebooks in which the usage of the hex
 Needs Matplotlib and Python >=3.5.
 And then just clone this repository (which has the *.py files) that are to be included.
 
-    cd <directory you clone>
+    cd <directory you cloned>
     edit a <script.py>
 
 

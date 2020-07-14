@@ -1479,6 +1479,9 @@ class HexGrid:
                 hx = Hex(
                     cx, cy, size, id=id, flat=flat
                 )  # instantiate Hex based on center and size
+
+                # store its grid row,col location. This becomes another way to find
+                # a particular Hex in the grid.
                 hx.row, hx.col = row, col
 
                 # xyz cube coords get assigned during __init__
