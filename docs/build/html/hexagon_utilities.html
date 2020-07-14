@@ -564,17 +564,18 @@ point to ‘complete’ the polygon to be drawn</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="hexagon_utilities.Hex.render_regular_polygon_from_center">
-<code class="sig-name descname">render_regular_polygon_from_center</code><span class="sig-paren">(</span><em class="sig-param">polygon_sides</em>, <em class="sig-param">polygon_size=None</em>, <em class="sig-param">angle_radians=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_regular_polygon_from_center" title="Permalink to this definition">¶</a></dt>
+<dt id="hexagon_utilities.Hex.render_regular_polygon_inside_hexagon">
+<code class="sig-name descname">render_regular_polygon_inside_hexagon</code><span class="sig-paren">(</span><em class="sig-param">polygon_sides</em>, <em class="sig-param">center_pt=None</em>, <em class="sig-param">polygon_size=None</em>, <em class="sig-param">angle_radians=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hexagon_utilities.Hex.render_regular_polygon_inside_hexagon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws a regular polygon that shares its center with hexagon</p>
 <p>Useful for drawing polygon _within_ the existing hexagonal space. For example, smaller hexagons inside the main grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>polygon_sides = number of sides in the regular polygon</strong></p></li>
-<li><p><strong>polygon_size = Size of the polygon’s side to be drawn. (defaults to hexagon’s size)</strong></p></li>
-<li><p><strong>angle_radians = will rotate the regular polygon by radians angle</strong></p></li>
-<li><p><strong>fc</strong> (<em>will color the face</em>)</p></li>
+<li><p><strong>center_pt</strong> (<em>xy_tuple. Default is None</em>) – (x_coord, y_coord) as the center point to draw the inner polygon from. If None, then defaults
+to the center of the parent Hexagon.</p></li>
+<li><p><strong>polygon_size</strong> (<em>integer</em>) – Size of the polygon’s side to be drawn. (defaults to hexagon’s size)</p></li>
+<li><p><strong>angle_radians</strong> (<em>float</em>) – Will rotate the regular polygon by radians angle</p></li>
 </ul>
 </dd>
 </dl>

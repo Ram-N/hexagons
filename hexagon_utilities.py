@@ -659,8 +659,14 @@ class Hex:
         ax.add_line(edge)
         return (ax,)
 
-    def render_regular_polygon_from_center(
-        self, polygon_sides, polygon_size=None, angle_radians=None, ax=None, **kwargs
+    def render_regular_polygon_inside_hexagon(
+        self,
+        polygon_sides,
+        center_pt=None,
+        polygon_size=None,
+        angle_radians=None,
+        ax=None,
+        **kwargs,
     ):
         """ Draws a regular polygon that shares its center with hexagon
 
@@ -671,9 +677,16 @@ class Hex:
 
             polygon_sides = number of sides in the regular polygon
 
-            polygon_size = Size of the polygon's side to be drawn. (defaults to hexagon's size)
-            angle_radians = will rotate the regular polygon by radians angle
-            fc:  will color the face
+            center_pt: xy_tuple. Default is None
+                (x_coord, y_coord) as the center point to draw the inner polygon from. If None, then defaults
+                to the center of the parent Hexagon.
+
+            polygon_size: integer
+                Size of the polygon's side to be drawn. (defaults to hexagon's size)
+
+            angle_radians: float
+                Will rotate the regular polygon by radians angle
+
 
         """
 
@@ -688,8 +701,11 @@ class Hex:
             if polygon_sides == 6 and self.flat:
                 angle_radians = pi / 6
 
+        if center_pt is None:  # if not supplied, just use self center
+            center_pt = (self.x, self.y)
+
         polygon = mpatches.RegularPolygon(
-            (self.x, self.y),
+            center_pt,
             numVertices=polygon_sides,
             radius=polygon_size,
             orientation=angle_radians,
