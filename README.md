@@ -33,3 +33,11 @@ In April of 2020, in the midst of worldwide pandemic, I (Ram) started dabbling w
 for repetitive tasks.
 
 The project grew and grew and then I ended up adding Example Jupyter notebooks and Documentation. There are over 20 stand-alone notebooks that can be run to generate various images with a large number of parameters specified.
+
+### Animated GIFs
+
+Sometimes, the variations from one image to the next are small. But when viewed with the help of an animated GIF,
+the changes can be seen.
+
+<img src='images/22blue_epsilon_angle_offsets.gif' height='300'>
+<img src='images/22_epsilon_angle_offsets.gif' height='300'>
