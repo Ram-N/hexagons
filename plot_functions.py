@@ -113,12 +113,12 @@ def save_file(
         fn = ""
         if nbk is not None:
             fn += str(nbk) + "_"
+        if title is not None:
+            fn += title + "_"
         if num_rows is not None:
             fn += "r_" + str(num_rows) + "_"
         if num_cols is not None:
             fn += "c_" + str(num_cols) + "_"
-        if title is not None:
-            fn += title + "_"
 
         if details is not None:
             fn += details
